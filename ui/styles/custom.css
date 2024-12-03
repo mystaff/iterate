@@ -1,0 +1,31 @@
+/* fix `opt` font */
+span.signature-attributes { color: gray; vertical-align: super; }
+ol.linenums {
+  list-style: none;
+  counter-reset: item;
+  margin-left: 0px;
+}
+ol.linenums li {
+  counter-increment: item;
+}
+ol.linenums li:before {
+  margin-right: 5px;
+  content: counter(item);
+  color: gray;
+  width: 3em;
+  text-align: right;
+  display: inline-block;
+  vertical-align: top;
+}
+
+ol.linenums li span.number { display: none; }
+ol.linenums li code {
+  display: inline-block;
+  border-left: 1px solid red;
+  padding-left: 5px;
+}
+
+ol.linenums li.selected { background: inherit; }
+ol.linenums li:target { background: #faebd7; }
+
+.main section article h4.name:target { background: #faebd7; }

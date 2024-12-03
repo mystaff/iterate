@@ -1,0 +1,59 @@
+{
+  "plugins": [
+    "plugins/markdown",
+    "node_modules/jsdoc-tsimport-plugin/index.js"
+  ],
+  "applicationName": "Demo",
+  "disqus": "",
+  "googleAnalytics": "",
+  "openGraph": {
+    "title": "",
+    "type": "website",
+    "image": "",
+    "site_name": "",
+    "url": ""
+  },
+  "meta": {
+    "title": "",
+    "description": "",
+    "keyword": ""
+  },
+  "source": {
+    "include": [
+      "index.js", "./iterate/", "./helpers/"
+    ],
+    "exclude":[],
+    "includePattern": ".+\\.js(doc)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "opts": {
+    "encoding": "utf8",
+    "recurse": true,
+    "destination": "./docs",
+    "template": "./node_modules/tui-jsdoc-template"
+  },
+  "templates": {
+    "cleverLinks": true,
+		"default": {
+			"outputSourceFiles": true,
+      "staticFiles": {
+        "include": ["ui/"]
+      }
+	  },
+    "css": [
+      "styles/custom.css"
+    ],
+    "logo": {
+      "url": "http://nhnent.github.io/tui.component.tree/latest/styles/logo.png",
+      "width": "150px",
+      "height": "13px",
+      "link": "https://github.com/nhnent/tui.jsdoc-template"
+    },
+    "footerText": "Iterate Library Documentation &copy; TimeDoctor LLC.",
+    "useCollapsibles": true
+  },
+	"markdown.hardwrap": true,
+	"markdown": {
+		"hardwrap": true
+	}
+}
