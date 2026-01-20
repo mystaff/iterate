@@ -42,5 +42,7 @@ module.exports = {
     'max-classes-per-file': ['error', { ignoreExpressions: true, max: 1 }],
     'no-cond-assign': 0,
     camelcase: 0,
+    'function-paren-newline': 0,
+    'function-call-argument-newline': 0,
   },
 };

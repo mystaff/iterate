@@ -18,7 +18,7 @@
         "--runInBand",
         "--logHeapUsage",
 
-        // "", // <-- uncomment and fill for specific test
+        // "helpers/mapping", // <-- uncomment and fill for specific test
       ],
       "skipFiles": [
         "<node_internals>/**",

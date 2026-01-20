@@ -1,59 +1,46 @@
 {
-  "plugins": [
-    "plugins/markdown",
-    "node_modules/jsdoc-tsimport-plugin/index.js"
-  ],
-  "applicationName": "Demo",
-  "disqus": "",
-  "googleAnalytics": "",
-  "openGraph": {
-    "title": "",
-    "type": "website",
-    "image": "",
-    "site_name": "",
-    "url": ""
-  },
-  "meta": {
-    "title": "",
-    "description": "",
-    "keyword": ""
+  "tags": {
+    "allowUnknownTags": false
   },
   "source": {
     "include": [
-      "index.js", "./iterate/", "./helpers/"
+      "index.js", "./iterate/", "./helpers/", "./logic"
     ],
     "exclude":[],
     "includePattern": ".+\\.js(doc)?$",
     "excludePattern": "(^|\\/|\\\\)_"
   },
+  "plugins": [
+    "plugins/markdown"
+  ],
   "opts": {
+    "template": "./node_modules/docdash",
     "encoding": "utf8",
+    "destination": "./docs/",
     "recurse": true,
-    "destination": "./docs",
-    "template": "./node_modules/tui-jsdoc-template"
+    "verbose": true
   },
   "templates": {
-    "cleverLinks": true,
+    "cleverLinks": false,
+    "monospaceLinks": false,
 		"default": {
 			"outputSourceFiles": true,
       "staticFiles": {
         "include": ["ui/"]
       }
 	  },
-    "css": [
-      "styles/custom.css"
-    ],
-    "logo": {
-      "url": "http://nhnent.github.io/tui.component.tree/latest/styles/logo.png",
-      "width": "150px",
-      "height": "13px",
-      "link": "https://github.com/nhnent/tui.jsdoc-template"
-    },
     "footerText": "Iterate Library Documentation &copy; TimeDoctor LLC.",
     "useCollapsibles": true
   },
-	"markdown.hardwrap": true,
-	"markdown": {
-		"hardwrap": true
-	}
+  "docdash": {
+    "search": true,
+    "typedefs": true,
+    "wrap": true,
+    "static": true,
+    "instance": true,
+    "scripts": [
+      "styles/custom.css",
+      "scripts/custom.js"
+    ]
+  }
 }

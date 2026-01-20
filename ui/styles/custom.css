@@ -1,31 +1,51 @@
-/* fix `opt` font */
-span.signature-attributes { color: gray; vertical-align: super; }
-ol.linenums {
-  list-style: none;
-  counter-reset: item;
-  margin-left: 0px;
+ol.linenums li::marker { cursor: pointer; }
+ol.linenums li:target::marker { background-color: #34446B; }
+ol.linenums li.selected * { background-color: #0d152a !important; }
+ol.linenums li:target * { background-color: #34446B !important; }
+
+div#main section article h4.name { background: inherit; color: #0e22a8; }
+div#main section article h4.name .type-signature { color: #329722; }
+div#main section article h4.name .type-signature-generator { color: #972222; }
+div#main section article h4.name .signature-attributes { color: #007693; user-select: none; }
+div#main section article h4.name:target { background: #fff8e3; }
+
+nav a.nav-focused { background: #fff8e3; color: #182473; }
+h4.name a.nav-anchor-hash { color: #b9b9b9; margin-left: 10px; }
+
+a.nav-hidden ~ ul { display: none; }
+
+nav ul.methods li[data-type="constructor"] {
+  margin-left: -20px;
 }
-ol.linenums li {
-  counter-increment: item;
-}
-ol.linenums li:before {
-  margin-right: 5px;
-  content: counter(item);
-  color: gray;
-  width: 3em;
-  text-align: right;
+
+nav ul.fields li a::before, nav ul.methods li[data-type="method"] a::before {
+  content: ".";
+  font-weight: bold;
   display: inline-block;
-  vertical-align: top;
+  margin-left: -14px;
+  margin-right: 2px;
 }
-
-ol.linenums li span.number { display: none; }
-ol.linenums li code {
+nav ul.members li a::before, nav ul.functions li a::before {
+  content: "#";
+  font-weight: bold;
   display: inline-block;
-  border-left: 1px solid red;
-  padding-left: 5px;
+  margin-left: -14px;
+  margin-right: 2px;
 }
+nav ul.methods li a::after, nav ul.functions li a::after {
+  content: "()";
+  font-weight: lighter;
+}
+nav ul::before {
+  display: block;
+  font: normal 12px 'Montserrat', sans-serif;
+  margin: 3px 0px 3px -1px;
+  color: #8996e8;
+}
+nav ul.members::before { content: "- Static Members"; }
+nav ul.fields::before { content: "- Instance Members"; }
+nav ul.functions::before { content: "- Static Functions"; }
+nav ul.methods::before { content: "- Instance Methods"; }
 
-ol.linenums li.selected { background: inherit; }
-ol.linenums li:target { background: #faebd7; }
-
-.main section article h4.name:target { background: #faebd7; }
+dd.tag-description ul.dummy ul li { list-style-type: disc; }
+dd.tag-description p { margin-top: 2px; margin-bottom: 2px; }

@@ -9,8 +9,7 @@ const WrappersFunctionalWrap = {
     @param {Symbol} [symbol=_]  Curry argument symbol
     @returns {Function}  Wrapped function
   */
-  curryFunction: (func, symbol) => function curryWrappedFunction(...args) {
-    if (!symbol) { symbol = WrappersFunctionalWrap.curryArgument; }
+  curryFunction: (func, symbol = WrappersFunctionalWrap.curryArgument) => function curryWrappedFunction(...args) {
     let idx = -1;
     const curry = [];
     while ((idx = args.indexOf(symbol, idx + 1)) >= 0) { curry.push(idx); }

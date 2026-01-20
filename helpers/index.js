@@ -1,6 +1,6 @@
 const Helpers__mapping = require('./mapping');
-const Helpers__cast = require('./cast');
-const Helpers__wrap = require('./wrap');
+const Helpers__casting = require('./casting');
+const Helpers__wrapping = require('./wrapping');
 
 /**
   @class
@@ -20,9 +20,10 @@ class Tests__Helpers {} // eslint-disable-line
 
   -- {@linkplain Helpers__mapping **mapping**} -- Functional helpers for **data mapping**.
 
-  -- {@linkplain Helpers__cast **cast**} -- Functional helpers for **type cast** and conversion.
+  -- {@linkplain Helpers__casting **casting**} -- Functional helpers for **type cast** and conversion.
 
-  -- {@linkplain Helpers__wrap **wrap**} -- Various **wrappers and reflections** for iterators and functional helpers.
+  -- {@linkplain Helpers__wrapping **wrapping**} -- Various **wrappers and reflections**
+    for iterators and functional helpers.
 
   All the functions are covered by the **tests** in {@linkplain Tests__Helpers **Tests for Helpers**} section,
   which can also be used as **examples**.
@@ -30,8 +31,8 @@ class Tests__Helpers {} // eslint-disable-line
 */
 const Helpers = {
   ...Helpers__mapping,
-  ...Helpers__cast,
-  ...Helpers__wrap,
+  ...Helpers__casting,
+  ...Helpers__wrapping,
 };
 
 module.exports = Helpers;
