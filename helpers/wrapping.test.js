@@ -132,7 +132,13 @@ class Tests__Helpers {
       method() { return true; },
       * generator() { yield true; },
     };
+    const originalMethod = context.method;
+    const originalGenerator = context.generator;
     _.wrapProperties(context, new Set([_.GeneratorFunction]), _.generationGeneratorFunctionWrapper, genClass);
+    expect(context.method).toBe(originalMethod);
+    expect(context.generator).not.toBe(originalGenerator);
+    expect(context.generator.wrapped).toBe(originalGenerator);
+    expect(context.generator.toString()).toBe(originalGenerator.toString());
     expect(context.method()).toBe(true);
     expect(context.generator().constructor).toBe(genClass);
     expect(Array.from(context.generator())).toEqual([true]);

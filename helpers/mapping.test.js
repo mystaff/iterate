@@ -15,10 +15,14 @@ class Tests__Helpers {
   */
   static async mapperParam_test() {
     const object = { a: 1, b: 2 };
-    const [propertyA, propertyOfObject, propertyB] = ['a', object, 'b'].map(_.mapperParam);
+    const [propertyA, propertyOfObject, propertyB, dup2, lag1] = ['a', object, 'b', 2, -1].map(_.mapperParam);
     expect(propertyA(object)).toBe(1);
     expect(propertyOfObject('b')).toBe(2);
     expect(propertyB(object)).toBe(2);
+    expect(dup2(2)).toEqual([2, 2]);
+    expect(lag1(1)).toBe(undefined);
+    expect(lag1(2)).toBe(1);
+    expect(lag1(3)).toBe(2);
   }
 
   /**
@@ -39,10 +43,10 @@ class Tests__Helpers {
   }
 
   /**
-    * {@linkcode Helpers__mapping.Window Window}: Window
+    * {@linkcode Helpers__mapping.Window Window}: Window data type
     @memberof Tests__Helpers
   */
-  static window_test() {
+  static Window_test() {
     const w = new _.Window(3);
     expect(Array.from(w)).toEqual([undefined, undefined, undefined]);
     expect(w.push(1)).toBe(4);
@@ -290,6 +294,15 @@ class Tests__Helpers {
     // Null
     const nullGetter = _.pigOf(null);
     expect(nullGetter('anything')).toBe('anything');
+
+    const objectGetter = _.pigOf({ key1: 'value1', key2: 'value2' });
+    expect(objectGetter('key2')).toBe('value2');
+
+    const mapGetter = _.pigOf(new Map([['key1', 'value1'], ['key2', 'value2']]));
+    expect(mapGetter('key2')).toBe('value2');
+
+    const arrayGetter = _.pigOf(['element1', 'element2', 'element3', 'element4']);
+    expect(arrayGetter(-2)).toBe('element3');
   }
 
   /**
@@ -349,26 +362,26 @@ class Tests__Helpers {
   */
   static lag_test() {
     // Basic lag
-    const lag2 = _.lag(2);
+    const lag2 = _.lag(1);
     expect(lag2(1)).toBe(undefined);
     expect(lag2(2)).toBe(1);
     expect(lag2(3)).toBe(2);
     expect(lag2(4)).toBe(3);
 
     // With default value
-    const lag2Default = _.lag(2, { defaultValue: 0 });
+    const lag2Default = _.lag(1, { defaultValue: 0 });
     expect(lag2Default(1)).toBe(0);
     expect(lag2Default(2)).toBe(1);
     expect(lag2Default(3)).toBe(2);
 
     // With map function
-    const lag1Map = _.lag(1, { mapFunction: (x) => x * 2 });
-    expect(lag1Map(5)).toBe(10); // 5 * 2
-    expect(lag1Map(10)).toBe(20); // 10 * 2
-    expect(lag1Map(15)).toBe(30); // 15 * 2
+    const lag1Map = _.lag(1, { map: (x) => x + 1 });
+    expect(lag1Map(5)).toBe(undefined); // 5 * 2
+    expect(lag1Map(10)).toBe(6); // 5 + 1
+    expect(lag1Map(15)).toBe(11); // 10 + 1
 
     // Invalid count
-    const lag0 = _.lag(0);
+    const lag0 = _.lag(-1);
     expect(lag0(42)).toBe(42); // acts as echo
   }
 
@@ -376,7 +389,7 @@ class Tests__Helpers {
     * {@linkcode Helpers__mapping.window _.window()}: sliding window
     @memberof Tests__Helpers
   */
-  static windowFn_test() {
+  static window_test() {
     const win2 = _.window(2);
     const w1 = win2(1);
     expect(Array.from(w1)).toEqual([undefined, 1]);
@@ -393,6 +406,15 @@ class Tests__Helpers {
     // Invalid count
     const win0 = _.window(0);
     expect(win0(42)).toBe(42); // acts as echo
+
+    // With mapping
+    const winMap = _.window(2, { map: [String, Array] });
+    const wm1 = winMap(1);
+    expect(Array.from(wm1)).toEqual([undefined, ['1']]);
+    const wm2 = winMap(2);
+    expect(Array.from(wm2)).toEqual([['1'], ['2']]);
+    const wm3 = winMap(3);
+    expect(Array.from(wm3)).toEqual([['2'], ['3']]);
   }
 
   /**
@@ -549,7 +571,7 @@ class Tests__Helpers {
     * {@linkcode Helpers__mapping.WindowIterator WindowIterator}: Window Iterator
     @memberof Tests__Helpers
   */
-  static windowIterator_test() {
+  static WindowIterator_test() {
     const w = new _.Window(3);
     w.push(1);
     w.push(2);

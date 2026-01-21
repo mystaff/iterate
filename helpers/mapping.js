@@ -240,15 +240,15 @@ const Helpers__mapping = {
     * * from property of specified object
     *
     Returns a function to get value by key from a map.
-    @param {(Array|Map|WeakMap|Set|WeakSet|object)} map  Collection or object, from which to get the value
+    @param {(Array|Map|WeakMap|Set|WeakSet|object)} collection  Collection or object, from which to get the value
       or check its existense in
     @returns {MappingFunction}  A `function(key):any`, returning the value
   */
-  pigOf(coll) {
-    if (coll == null) { return Helpers__mapping.echo; }
-    const getter = Helpers__mapping.collectionGetOfMethodsByType[Object.getPrototypeOf(coll)]
-      ?? Helpers__mapping.property;
-    return getter(coll);
+  pigOf(collection) {
+    if (collection == null) { return Helpers__mapping.echo; }
+    const getter = Helpers__mapping.collectionGetOfMethodsByType.get(Object.getPrototypeOf(collection))
+      ?? Helpers__mapping.propertyOf;
+    return getter(collection);
   },
 
   /**
@@ -300,24 +300,25 @@ const Helpers__mapping = {
       (supporting `constructor(count)`, `.fill(value)`, `.push(value)` and `.shift()` methods) data structure;
       {@linkcode Window new Window(count)} by default
     @property {*} [options.defaultValue]  Value to return when the `window` is not full yet; Default: `undefined`
-    @property {MappingFunction} [options.mapFunction]  When specified: a function to convert each output
-      from a stream value with
+    @property {MapperParam} [options.map]  When specified: a {@linkcode MapperParam} to convert each value with
     ---
   */
-  lag(count, { window, defaultValue, mapFunction } = {}) {
+  lag(steps, { window, defaultValue, map } = {}) {
+    const count = steps + 1;
     if (!Number.isInteger(count) || count < 1) { return Helpers__mapping.echo; }
     if (!window) { window = new Helpers__mapping.Window(count); }
     window.fill(defaultValue);
 
-    if (mapFunction) {
+    if (map) {
+      const mapper = Helpers__mapping.mapper(map);
       return function _lag(value) {
-        if (window.push(value) > count) { return mapFunction(window.shift()); }
-        return defaultValue;
+        window.push(mapper(value));
+        return window.shift();
       };
     }
     return function _lag(value) {
-      if (window.push(value) > count) { return window.shift(); }
-      return defaultValue;
+      window.push(value);
+      return window.shift();
     };
   },
 
@@ -332,18 +333,18 @@ const Helpers__mapping = {
       (supporting `constructor(count)`, `.fill(value)`, `.push(value)` and `.shift()` methods) data structure;
       {@linkcode Window new Window(count)} by default
     @property {*} [options.defaultValue]  Value to initially fill the `window` with; Default: `undefined`
-    @property {MappingFunction} [options.mapFunction]  When specified: a function to convert each output
-      from a stream value with
+    @property {MapperParam} [options.map]  When specified: a {@linkcode MapperParam} to convert each value with
     ---
   */
-  window(count, { window, defaultValue, mapFunction } = {}) {
+  window(count, { window, defaultValue, map } = {}) {
     if (!Number.isInteger(count) || count < 1) { return Helpers__mapping.echo; }
     if (!window) { window = new Helpers__mapping.Window(count); }
     window.fill(defaultValue);
 
-    if (mapFunction) {
+    if (map) {
+      const mapper = Helpers__mapping.mapper(map);
       return function _lag(value) {
-        if (window.push(mapFunction(value)) > count) { window.shift(); }
+        if (window.push(mapper(value)) > count) { window.shift(); }
         return window;
       };
     }
