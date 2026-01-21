@@ -139,93 +139,123 @@ const Helpers__mapping = {
   */
   WindowIterator,
 
-  /** Echo function.
+  /** Echo function.\
+    * {@linkplain Tests__Helpers.echo_test Unit Test}
     @param {*} value  A value to be returned as-is
     @returns {*}  Returns the `value` itself
   */
   echo: (value) => value,
 
-  /** Async echo function.
+  /** Async echo function.\
+    * {@linkplain Tests__Helpers.echoAsync_test Unit Test}
     @param {*} value  A value to be returned as-is
     @returns {*}  Returns the `value` itself
   */
   echoAsync: async (value) => value,
 
-  /** Returns a function, which always returns the specified value, ignoring the input value.
+  /** Returns a function, which always returns the specified value, ignoring the input value.\
+    * {@linkplain Tests__Helpers.valueFn_test Unit Test}
     @param {*} value  A value to return from resulting function
     @returns {MappingFunction}  A function, returning the specified `value`
   */
   valueFn: (value) => () => value,
 
+  /** Check if value is nullish.\
+    * {@linkplain Tests__Helpers.isNullish_test Unit Test}
+    @param {*} value  Value to check
+    @returns {boolean}  `true` if value is `null` or `undefined`
+  */
   isNullish: (value) => value == null,
 
+  /** Check if value is not nullish.\
+    * {@linkplain Tests__Helpers.isNotNullish_test Unit Test}
+    @param {*} value  Value to check
+    @returns {boolean}  `true` if value is not `null` or `undefined`
+  */
   isNotNullish: (value) => value != null,
 
+  /** Logical not.\
+    * {@linkplain Tests__Helpers.not_test Unit Test}
+    @param {*} value  Value to negate
+    @returns {boolean}  Logical negation of the value
+  */
   not: (value) => !value,
 
-  /** Returns a function to check if key exists in an object, using `in`.
+  /** Returns a function to check if key exists in an object, using `in`.\
+    * {@linkplain Tests__Helpers.inOf_test Unit Test}
     @param {object} object  Object in which to check the key
     @returns {MappingFunction}  A `function(key):boolean`, returning result of `key in object`
   */
   inOf: (object) => (key) => key in object,
-  /** Returns a function to checks if object has a key, using `in`.
+  /** Returns a function to checks if object has a key, using `in`.\
+    * {@linkplain Tests__Helpers.in_test Unit Test}
     @param {*} key  Key to check
     @returns {MappingFunction}  A `function(object):boolean`, returning result of `key in object`
       or `undefined` if object is nullish
   */
   in: (key) => (object) => (object == null ? undefined : key in object),
 
-  /** Returns a function to check if key exists in an object, using `hasOwn`.
+  /** Returns a function to check if key exists in an object, using `hasOwn`.\
+    * {@linkplain Tests__Helpers.hasOwnOf_test Unit Test}
     @param {object} object  Object in which to check the key
     @returns {MappingFunction}  A `function(key):boolean`, returning result of `Object.hasOwn(object, key)`
       or `undefined` if object is nullish
   */
   hasOwnOf: (object) => (key) => Object.hasOwn(object, key),
-  /** Returns a function to checks if object has a key, using `hasOwn`.
+  /** Returns a function to checks if object has a key, using `hasOwn`.\
+    * {@linkplain Tests__Helpers.hasOwn_test Unit Test}
     @param {*} key  Key to check
     @returns {MappingFunction}  A `function(object):boolean`, returning result of `Object.hasOwn(object, key)`
   */
   hasOwn: (key) => (object) => (object == null ? undefined : Object.hasOwn(object, key)),
 
-  /** Returns a function to get value from key in an object.
+  /** Returns a function to get value from key in an object.\
+    * {@linkplain Tests__Helpers.propertyOf_test Unit Test}
     @param {object} object  Object, from which to get the value
     @returns {MappingFunction}  A `function(key):any`, returning result of `object[key]`
   */
   propertyOf: (object) => (key) => object[key],
-  /** Returns a function to get value from object property by a key.
+  /** Returns a function to get value from object property by a key.\
+    * {@linkplain Tests__Helpers.property_test Unit Test}
     @param {*} key  Property key to get the value from
     @returns {MappingFunction}  `function(object):any`, returning result of `object?.[key]`
   */
   property: (key) => (object) => object?.[key],
 
-  /** Returns a function to get value by key from a map.
+  /** Returns a function to get value by key from a map.\
+    * {@linkplain Tests__Helpers.getOf_test Unit Test}
     @param {(Map|WeakMap)} map  Map, from which to get the value
     @returns {MappingFunction}  A `function(key):any`, returning result of `map.get(key)`
   */
   getOf: (map) => (key) => map.get(key),
-  /** Returns a function to get value from map by a key.
+  /** Returns a function to get value from map by a key.\
+    * {@linkplain Tests__Helpers.get_test Unit Test}
     @param {*} key  Key to get the value from
     @returns {MappingFunction}  A `function(map):any`, returning result of `map.get(key)`
   */
   get: (key) => (map) => map?.get?.(key),
 
-  /** Returns a function to get array element by index, using `.at()` (negative indexes supported).
+  /** Returns a function to get array element by index, using `.at()` (negative indexes supported).\
+    * {@linkplain Tests__Helpers.atOf_test Unit Test}
     @param {Array} array  Map, from which to get the value
     @returns {MappingFunction}  A `function(key):any`, returning result of `map.get(key)`
   */
   atOf: (array) => (index) => array.at(index),
-  /** Returns a function to get an element by index from array, using `.at()` (negative indexes supported).
+  /** Returns a function to get an element by index from array, using `.at()` (negative indexes supported).\
+    * {@linkplain Tests__Helpers.at_test Unit Test}
     @param {*} key  Key to get the value from
     @returns {MappingFunction}  A `function(map):any`, returning result of `map.get(key)`
   */
   at: (index) => (array) => array?.at?.(index),
 
-  /** Returns a function to check if key exists in a map or set.
+  /** Returns a function to check if key exists in a map or set.\
+    * {@linkplain Tests__Helpers.hasOf_test Unit Test}
     @param {(Map|Set|WeakMap|WeakSet)} mapOrSet  Map or set, in which to check the key
     @returns {MappingFunction}  A `function(key):boolean`, returning result of `mapOrSet.has(key)`
   */
   hasOf: (mapOrSet) => (item) => mapOrSet.has(item),
-  /** Returns a function to check if map or set has a key.
+  /** Returns a function to check if map or set has a key.\
+    * {@linkplain Tests__Helpers.has_test Unit Test}
     @param {*} key  Key to check
     @returns {MappingFunction}  A `function(mapOrSet):any`, returning result of `mapOrSet.has(key)`
   */
@@ -239,7 +269,8 @@ const Helpers__mapping = {
     * * `true` if key exists in specified `Set` or `WeakSet`
     * * from property of specified object
     *
-    Returns a function to get value by key from a map.
+    Returns a function to get value by key from a map.\
+    * {@linkplain Tests__Helpers.pigOf_test Unit Test}
     @param {(Array|Map|WeakMap|Set|WeakSet|object)} collection  Collection or object, from which to get the value
       or check its existense in
     @returns {MappingFunction}  A `function(key):any`, returning the value
@@ -259,6 +290,7 @@ const Helpers__mapping = {
     * * `true` if `Set` or `WeakSet` has specified key
     * * from object by a property
     *
+    * {@linkplain Tests__Helpers.pig_test Unit Test}
     @param {*} key  Key or index or property to get the value from or check its existense
     @returns {MappingFunction}  A `function(coll):any`, returning the value
   */
@@ -279,7 +311,8 @@ const Helpers__mapping = {
     - `false`, if `count` is zero or negative non-integer;
     - `true`, if `count` is positive non-integer;
     - `true` `count` number of times, then `false`, if `count` is positive integer;
-    - `false` `-count` number of times, then `true`, if `count` is negative integer.
+    - `false` `-count` number of times, then `true`, if `count` is negative integer.\
+    * {@linkplain Tests__Helpers.times_test Unit Test}
     @param {number} count  Number of times to return `true` from resulting function
     @returns {MappingFunction}  A function returning boolean
   */
@@ -290,7 +323,8 @@ const Helpers__mapping = {
   },
 
   /**
-    Returns a function, used to delay the data stream in specified number of iterations.
+    Returns a function, used to delay the data stream in specified number of iterations.\
+    * {@linkplain Tests__Helpers.lag_test Unit Test}
     @param {number} count  Positive integer number of iterations to delay the output values from input values
     @param {object} [options]  Additional options
     @returns {MappingFunction}  A function, accepting the value and returning the previously accepted value
@@ -324,7 +358,8 @@ const Helpers__mapping = {
 
   /**
     Returns a function, which returns a {@linkcode Window} (or other explicitly-defined compatible object)
-    representing a window containing specified number of last iterated values.
+    representing a window containing specified number of last iterated values.\
+    * {@linkplain Tests__Helpers.window_test Unit Test}
     @param {number} count  Positive integer, which defines the number of last values contained in the window
     @param {object} [options]  Additional options
     @returns {MappingFunction}  A function, accepting the value and returning the window of `count` last values
@@ -354,7 +389,8 @@ const Helpers__mapping = {
     };
   },
 
-  /** Returns a function, which returns array of duplicates from input value.
+  /** Returns a function, which returns array of duplicates from input value.\
+    * {@linkplain Tests__Helpers.stretch_test Unit Test}
     @param {number} count  Number of duplicates to return
     @returns {MappingFunction}  A `function(value):[...value]`, which returns an array of `count` duplictes of `value`
   */
@@ -363,7 +399,8 @@ const Helpers__mapping = {
     return (value) => new Array(count).fill(value);
   },
 
-  /** Returns a function, which returns nullish values mapped with specified function, other values as-is.
+  /** Returns a function, which returns nullish values mapped with specified function, other values as-is.\
+    * {@linkplain Tests__Helpers.ifNull_test Unit Test}
     @param {MappingFunction} mapper  A function to call for nullish values in stream
     @returns {MappingFunction}  Returns the function, which returns nullish values mapped with `mapper`
   */
@@ -372,7 +409,8 @@ const Helpers__mapping = {
     return value;
   },
 
-  /** Returns a function, which returns nullish values replaces with specified default values, other values as-is.
+  /** Returns a function, which returns nullish values replaces with specified default values, other values as-is.\
+    * {@linkplain Tests__Helpers.nullDefault_test Unit Test}
     @param {*} defaultValue  A value to replace the nullish values in stream with
     @returns {MappingFunction}  Returns the function, which returns nullish values replaced with `defaultValue`
   */
@@ -381,7 +419,8 @@ const Helpers__mapping = {
     return value;
   },
 
-  /** Returns a function, preforming the conditional processing of input value using the pipelines.
+  /** Returns a function, preforming the conditional processing of input value using the pipelines.\
+    * {@linkplain Tests__Helpers.if_test Unit Test}
     @param {PredicatorPipeline} conditionPredicator  A condition
     @param {MapperPipeline} truthyMapper  Truthy outcome
     @param {MapperPipeline} falsyMapper  Falsy outcome
@@ -408,14 +447,16 @@ const Helpers__mapping = {
   */
   mapperParam(parameter) /* c8 ignore next */ { /* computed definition */ }, // eslint-disable-line
 
-  /** Get predicator function for specified predicator parameter
+  /** Get predicator function for specified predicator parameter.\
+    * {@linkplain Tests__Helpers.predicatorParam_test Unit Test}
     @param {PredicatorParam} parameter  Parameter, which to get a mapping function from
     @returns {MappingFunction}  Predicator function for the specified parameter
   */
   predicatorParam(parameter) /* c8 ignore next */ { /* computed definition */ }, // eslint-disable-line
 
   /**
-    Returns a mapping function, representing given mapping pipeline.
+    Returns a mapping function, representing given mapping pipeline.\
+    * {@linkplain Tests__Helpers.pipelineMapping_test Unit Test}
     @param {MappingFunction[]} functions  A mapping pipeline as an array of mapping functions.
     @param {boolean} [optimize=false]  Is it ok to return simplified function? Don't use for alternating `functions`.
     @returns {MappingFunction}  A mapping function, which can be used to process the value though the given pipeline.
@@ -432,7 +473,8 @@ const Helpers__mapping = {
   },
 
   /**
-    Maps the values of object or array in-place. Returns the same `object` as input.
+    Maps the values of object or array in-place. Returns the same `object` as input.\
+    * {@linkplain Tests__Helpers.mapInPlace_test Unit Test}
     @param {Object|Array} object  An object, which values to map.
     @param {MapperFunction} function  A mapper function to apply to each value.
     @returns {Object|Array}  returns `object`.
@@ -464,7 +506,8 @@ const Helpers__mapping = {
   },
 
   /**
-    Returns a predicator function, representing given predicator pipeline.
+    Returns a predicator function, representing given predicator pipeline.\
+    * {@linkplain Tests__Helpers.predicator_test Unit Test}
     @param {PredicatorPipeline} functions  A predicator pipeline: a single predicator function or an array of such.
     @param {boolean} [optimize=false]  Is it ok to return simplified function? Don't use for alternating `functions`.
     @returns {PredicatorFunction}  A predicator function,
