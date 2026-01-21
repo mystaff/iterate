@@ -405,13 +405,13 @@ const Helpers__mapping = {
     @param {MapperParam} parameter  Parameter, which to get a mapper function from
     @returns {MappingFunction}  Mapper function for the specified parameter
   */
-  mapperParam(parameter) { /* computed definition below */ }, // eslint-disable-line
+  mapperParam(parameter) /* c8 ignore next */ { /* computed definition */ }, // eslint-disable-line
 
   /** Get predicator function for specified predicator parameter
     @param {PredicatorParam} parameter  Parameter, which to get a mapping function from
     @returns {MappingFunction}  Predicator function for the specified parameter
   */
-  predicatorParam(parameter) { /* computed definition below */ }, // eslint-disable-line
+  predicatorParam(parameter) /* c8 ignore next */ { /* computed definition */ }, // eslint-disable-line
 
   /**
     Returns a mapping function, representing given mapping pipeline.
