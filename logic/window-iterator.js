@@ -99,8 +99,8 @@ class WindowIterator {
    * Returns the next value in the iteration sequence.
    * Implements the Iterator protocol's next() method.
    * @returns {{value: *, done: boolean}} An iterator result object
-   * @see {@link Tests__Logic.window_test}
-   * @see {@link Tests__Logic.window_multiple_iterations_test}
+   * @see {@link Tests__Logic.window_test} - `Window`: Window
+   * @see {@link Tests__Logic.window_multiple_iterations_test} - Test multiple concurrent iterations
    */
   next() {
     if (this.index < 0) { return { done: true }; }
@@ -121,7 +121,7 @@ class WindowIterator {
    * Implements the Iterator protocol's return() method.
    * @param {*} value - The value to return
    * @returns {{value: *, done: boolean}} An iterator result object with done: true
-   * @see {@link Tests__Logic.window_iterator_return_test}
+   * @see {@link Tests__Logic.window_iterator_return_test} - Test iterator return method
    */
   return(value) {
     this.index = -1;
@@ -132,7 +132,7 @@ class WindowIterator {
    * Terminates the iterator due to an error condition.
    * Implements the Iterator protocol's throw() method.
    * @returns {{done: boolean}} An iterator result object with done: true
-   * @see {@link Tests__Logic.window_iterator_throw_test}
+   * @see {@link Tests__Logic.window_iterator_throw_test} - Test iterator throw method
    */
   throw() {
     this.index = -1;
