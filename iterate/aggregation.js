@@ -33,6 +33,11 @@ class Iterate__aggregation extends Iterate__generation {
     @param {Array} [array]  If specified, the results will be pushed to this array
     @this {Iterate}  Pipeline
     @returns {Array.<*>}  Array with iterated results
+    @example
+    const { Iterate } = require('@mystaff/iterate');
+    
+    const iter = new Iterate(Iterate.from([1, 2, 3]));
+    iter.map(x => x * 2).toArray(); // [2, 4, 6]
   */
   toArray(array) {
     if (array) {
@@ -128,6 +133,11 @@ class Iterate__aggregation extends Iterate__generation {
       If not provided, uses the first item from iteration.
     @this {Iterate}  Current pipeline
     @returns {*}  The final accumulated value
+    @example
+    const { Iterate } = require('@mystaff/iterate');
+    
+    const iter = new Iterate(Iterate.from([1, 2, 3, 4]));
+    iter.reduce((acc, val) => acc + val, 0); // 10
   */
   reduce(reducer, initialValue) {
     if (initialValue === undefined) {

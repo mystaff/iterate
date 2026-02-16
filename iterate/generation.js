@@ -21,6 +21,11 @@ class Iterate__generation extends IterateBase {
     * {@linkplain Tests__Iterate.empty_test Unit Test}
     @returns {Iterate}
     @method
+    @example
+    const { Iterate } = require('@mystaff/iterate');
+    
+    const empty = new Iterate(Iterate.empty());
+    empty.toArray(); // []
   */
   static* empty() {
     // Empty generator
@@ -46,6 +51,11 @@ class Iterate__generation extends IterateBase {
       and it shall return {@linkcode IterableParam}.
     @returns {Iterate}
     @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol
+    @example
+    const { Iterate } = require('@mystaff/iterate');
+    
+    const iter = new Iterate(Iterate.from([1, 2, 3]));
+    iter.toArray(); // [1, 2, 3]
   */
   static* from(param, ...args) {
     if (param == null) { return; }
@@ -67,6 +77,11 @@ class Iterate__generation extends IterateBase {
       Functions will be called without arguments
     @returns {Iterate}
     @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol
+    @example
+    const { Iterate } = require('@mystaff/iterate');
+    
+    const iter = new Iterate(Iterate.concat([1, 2], [3, 4]));
+    iter.toArray(); // [1, 2, 3, 4]
   */
   static* concat(...params) {
     for (const param of params) {
@@ -133,6 +148,11 @@ class Iterate__generation extends IterateBase {
       May also be negative or zero. Zero or too big value will produce only one item `start`
     @yields {KeyValue}  Each entry from `object` as `[key, value]`
     @returns {Iterate}
+    @example
+    const { Iterate } = require('@mystaff/iterate');
+    
+    const iter = new Iterate(Iterate.range(5));
+    iter.toArray(); // [0, 1, 2, 3, 4]
   */
   static* range(start, end, step = 1) {
     if (end == null) { end = start; start = 0; }

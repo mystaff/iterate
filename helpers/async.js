@@ -19,6 +19,10 @@ const Helpers__async = {
     @param {*} result  Result
     @returns {Promise<*>}  Returns value specified in `result` argument
     @see https://nodejs.org/api/timers.html#timerspromisessettimeoutdelay-value-options
+    @example
+    const _ = require('@mystaff/iterate');
+    
+    await _.delay(1000, 'done'); // waits 1 second, returns 'done'
   */
   async delay(milliseconds, result) {
     return setTimeout(milliseconds, result);

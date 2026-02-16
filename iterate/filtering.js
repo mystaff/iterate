@@ -46,6 +46,11 @@ class Iterate__filtering extends Iterate__mapping {
       the result of last function determines the predicate of filtering.
     @this {IterateContext}  Current context of pipeline
     @returns {Iterate}  {@linkcode Iterate this} for chaining
+    @example
+    const { Iterate } = require('@mystaff/iterate');
+    
+    const iter = new Iterate(Iterate.from([1, 2, 3, 4, 5]));
+    iter.filter(x => x > 2).toArray(); // [3, 4, 5]
   */
   * filter(...predicators) {
     const func = Helpers.predicator(predicators);
@@ -108,6 +113,11 @@ class Iterate__filtering extends Iterate__mapping {
       -- takes items while predicate is truthy
     @this {IterateContext}  Current context of pipeline
     @returns {Iterate}  {@linkcode Iterate this} for chaining
+    @example
+    const { Iterate } = require('@mystaff/iterate');
+    
+    const iter = new Iterate(Iterate.from([1, 2, 3, 4, 5]));
+    iter.take(3).toArray(); // [1, 2, 3]
   */
   * take(...predicators) {
     if (predicators.length === 1 && typeof predicators[0] === 'number') {

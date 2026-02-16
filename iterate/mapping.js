@@ -75,6 +75,11 @@ class Iterate__mapping extends Iterate__aggregation {
       {@linkplain MapperParam parameters} used in a sequence to transform the values of iteration.
     @this {IterateContext}  Current context of pipeline
     @returns {Iterate}  {@linkcode Iterate this} for chaining
+    @example
+    const { Iterate } = require('@mystaff/iterate');
+    
+    const iter = new Iterate(Iterate.from([1, 2, 3]));
+    iter.map(x => x * 2).toArray(); // [2, 4, 6]
   */
   * map(...mappers) {
     const func = Helpers.mapper(mappers);
@@ -107,6 +112,11 @@ class Iterate__mapping extends Iterate__aggregation {
       The result of last mapper function is flattened into the iteration
     @this {IterateContext}  Current context of pipeline
     @returns {Iterate}  {@linkcode Iterate this} for chaining
+    @example
+    const { Iterate } = require('@mystaff/iterate');
+    
+    const iter = new Iterate(Iterate.from([1, 2, 3]));
+    iter.flatMap(x => [x, x * 2]).toArray(); // [1, 2, 2, 4, 3, 6]
   */
   * flatMap(...mappers) {
     const func = Helpers.mapper(mappers);
