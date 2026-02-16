@@ -111,6 +111,24 @@ class Iterate__aggregation extends Iterate__generation {
     return count;
   }
 
+  /**
+    Reduces iteration to a single value by applying a reducer function to each item.
+    If no initial value is provided, uses the first item as initial value.\
+    Similar to native
+    {@linkplain https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/reduce
+    iterator.reduce()}
+    method\
+    * **Unit Tests:**
+    * * {@linkplain Tests__Iterate.reduce_withReducer With reducer function}
+    * * {@linkplain Tests__Iterate.reduce_withInitial With initial value}
+    * * {@linkplain Tests__Iterate.reduce_sum Sum without reducer (default addition)}
+    @param {function} [reducer]  Reducer function `(accumulator, currentValue, index) => newAccumulator`.
+      If not provided, uses addition operator (`+`) to sum values.
+    @param {*} [initialValue]  Initial value for the accumulator.
+      If not provided, uses the first item from iteration.
+    @this {Iterate}  Current pipeline
+    @returns {*}  The final accumulated value
+  */
   reduce(reducer, initialValue) {
     if (initialValue === undefined) {
       this.index = 0;

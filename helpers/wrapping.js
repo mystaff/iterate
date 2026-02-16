@@ -232,8 +232,21 @@ const Helpers__wrapping = {
   */
   curry: WrappersFunctionalWrap.curry,
 
+  /**
+    Returns a curried version of a function with global context.\
+    * {@linkplain Tests__Helpers.curryFunction_test Unit Test}
+    @param {function} func  Function to curry
+    @returns {function}  A function that accepts curry arguments and returns the curried function
+  */
   curryFunction: (func) => (...args) => WrappersFunctionalWrap.curry(func, global, ...args),
 
+  /**
+    Returns a curried version of a method with specified context.\
+    * {@linkplain Tests__Helpers.curryMethod_test Unit Test}
+    @param {function|string|number|symbol} func  Method to curry, or property name of the method in context
+    @param {object} context  Context object containing the method
+    @returns {function}  A function that accepts curry arguments and returns the curried method
+  */
   curryMethod: (func, context) => (...args) => {
     if (typeof func !== 'function' && context && context !== WrappersFunctionalWrap.curryArgument) {
       func = context[func];

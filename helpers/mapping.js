@@ -331,17 +331,41 @@ const Helpers__mapping = {
     return () => count && Boolean(count--);
   },
 
+  /**
+    Returns a function, which returns:
+    - `false`, if `count` is zero or if `predicate` is falsy;
+    - `true`, if `count` is positive non-integer and `predicate` is truthy;
+    - `true` `count` number of times when `predicate` is truthy, then `false`, if `count` is positive integer;
+    - `false` `-count` number of times when `predicate` is truthy, then `true`, if `count` is negative integer.\
+    * {@linkplain Tests__Helpers.trueTimes_test Unit Test}
+    @param {number} count  Number of times to return `true` from resulting function when predicate is truthy
+    @returns {MappingFunction}  A function accepting predicate and returning boolean
+  */
   trueTimes(count) {
     if (!count) { return () => false; }
     if (count < 0) { return (predicate) => !(predicate && count && count++); }
     return (predicate) => predicate && count && Boolean(count--);
   },
 
+  /**
+    Returns a counter function that increments by `step` on each call.\
+    * {@linkplain Tests__Helpers.counter_test Unit Test}
+    @param {number} start  Initial value of the counter
+    @param {number} [step=1]  Increment step for each call
+    @returns {MappingFunction}  A function that returns the current counter value and increments it
+  */
   counter(start, step = 1) {
     start -= step;
     return () => (start += step);
   },
 
+  /**
+    Returns a conditional counter function that increments by `step` only when predicate is truthy.\
+    * {@linkplain Tests__Helpers.trueCounter_test Unit Test}
+    @param {number} start  Initial value of the counter
+    @param {number} [step=1]  Increment step for each call when predicate is truthy
+    @returns {MappingFunction}  A function that returns the current counter value and increments it only if predicate is truthy
+  */
   trueCounter(start, step = 1) {
     return (predicate) => {
       try {

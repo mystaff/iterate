@@ -124,6 +124,16 @@ class Iterate__mapping extends Iterate__aggregation {
     }
   }
 
+  /**
+    Creates a multi-dimensional cartesian product by combining each value from the current iteration
+    with values from specified iterables.\
+    * {@linkplain Tests__Iterate.dim_test Unit Test}
+    @param {...(Iterable|function)} iterables  One or more iterables (or functions returning iterables)
+      to combine with current iteration values. Each iterable is combined in sequence to create
+      multi-dimensional arrays.
+    @this {IterateContext}  Current context of pipeline
+    @returns {Iterate}  {@linkcode Iterate this} for chaining, yielding arrays of combined values
+  */
   * dim(...iterables) {
     for (const item of this) {
       yield* dimRecursion.call(this, [item], iterables);

@@ -56,6 +56,20 @@ class Iterate__filtering extends Iterate__mapping {
     }
   }
 
+  /**
+    Drop (skip) values from the beginning of iteration.
+    If a number is provided, drops that many items.
+    If predicator(s) provided, drops items while predicate is truthy, then yields remaining items.\
+    * **Unit Tests:**
+    * * {@linkplain Tests__Iterate.drop_number Drop first N items}
+    * * {@linkplain Tests__Iterate.drop_predicator Drop while predicate is truthy}
+    @param {...(number|PredicatorParam)} predicators  Either:
+    * * A single number -- drops that many items from the beginning
+    * * Predicator {@linkplain IteratePredicatorFunction callbacks} and/or {@linkplain PredicatorParam parameters}
+      -- drops items while predicate is truthy
+    @this {IterateContext}  Current context of pipeline
+    @returns {Iterate}  {@linkcode Iterate this} for chaining
+  */
   * drop(...predicators) {
     if (predicators.length === 1 && typeof predicators[0] === 'number') {
       let n = predicators[0];
@@ -77,6 +91,24 @@ class Iterate__filtering extends Iterate__mapping {
     }
   }
 
+  /**
+    Take (yield) values from the beginning of iteration, then stop.
+    If a number is provided, takes that many items.
+    If predicator(s) provided, takes items while predicate is truthy, then stops.\
+    Similar to native
+    {@linkplain https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/take
+    iterator.take()}
+    method\
+    * **Unit Tests:**
+    * * {@linkplain Tests__Iterate.take_number Take first N items}
+    * * {@linkplain Tests__Iterate.take_predicator Take while predicate is truthy}
+    @param {...(number|PredicatorParam)} predicators  Either:
+    * * A single number -- takes that many items from the beginning
+    * * Predicator {@linkplain IteratePredicatorFunction callbacks} and/or {@linkplain PredicatorParam parameters}
+      -- takes items while predicate is truthy
+    @this {IterateContext}  Current context of pipeline
+    @returns {Iterate}  {@linkcode Iterate this} for chaining
+  */
   * take(...predicators) {
     if (predicators.length === 1 && typeof predicators[0] === 'number') {
       let n = predicators[0];
@@ -95,6 +127,19 @@ class Iterate__filtering extends Iterate__mapping {
     }
   }
 
+  /**
+    Tests whether all values in iteration satisfy the predicate.
+    Returns `true` if all items pass the test, `false` otherwise.\
+    Similar to native
+    {@linkplain https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/every
+    iterator.every()}
+    method\
+    * {@linkplain Tests__Iterate.every_test Unit Test}
+    @param {...PredicatorParam} predicators  Predicator {@linkplain IteratePredicatorFunction callbacks} and/or
+      {@linkplain PredicatorParam parameters} used to test each value
+    @this {IterateContext}  Current context of pipeline
+    @returns {boolean}  `true` if all values satisfy the predicate, `false` otherwise
+  */
   every(...predicators) {
     const func = Helpers.predicator(predicators);
     for (const item of this) {
@@ -104,6 +149,19 @@ class Iterate__filtering extends Iterate__mapping {
     return true;
   }
 
+  /**
+    Tests whether at least one value in iteration satisfies the predicate.
+    Returns `true` if any item passes the test, `false` otherwise.\
+    Similar to native
+    {@linkplain https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/some
+    iterator.some()}
+    method\
+    * {@linkplain Tests__Iterate.some_test Unit Test}
+    @param {...PredicatorParam} predicators  Predicator {@linkplain IteratePredicatorFunction callbacks} and/or
+      {@linkplain PredicatorParam parameters} used to test each value
+    @this {IterateContext}  Current context of pipeline
+    @returns {boolean}  `true` if any value satisfies the predicate, `false` otherwise
+  */
   some(...predicators) {
     const func = Helpers.predicator(predicators);
     for (const item of this) {
@@ -113,6 +171,19 @@ class Iterate__filtering extends Iterate__mapping {
     return false;
   }
 
+  /**
+    Finds and returns the first value in iteration that satisfies the predicate.
+    Returns `undefined` if no value satisfies the predicate.\
+    Similar to native
+    {@linkplain https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/find
+    iterator.find()}
+    method\
+    * {@linkplain Tests__Iterate.find_test Unit Test}
+    @param {...PredicatorParam} predicators  Predicator {@linkplain IteratePredicatorFunction callbacks} and/or
+      {@linkplain PredicatorParam parameters} used to test each value
+    @this {IterateContext}  Current context of pipeline
+    @returns {*}  The first value that satisfies the predicate, or `undefined` if none found
+  */
   find(...predicators) {
     const func = Helpers.predicator(predicators);
     for (const item of this) {
