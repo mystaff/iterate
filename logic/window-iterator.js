@@ -2,7 +2,7 @@
  * An iterator for the Window class that efficiently iterates over the circular buffer
  * in insertion order. This iterator maintains state to track its position and can be
  * reused or reset as needed.
- * 
+ *
  * @class WindowIterator
  * @implements {Iterator}
  * @example

@@ -5,7 +5,7 @@ const WindowIterator = require('./window-iterator');
  * The window uses a circular buffer pattern where new values overwrite the oldest values
  * when the buffer is full. It provides optimized iteration strategies based on the current
  * state of the iterator.
- * 
+ *
  * @class Window
  * @example
  * const w = new Window(3);
@@ -91,7 +91,7 @@ class Window {
    * - The primary iterator (if available and not in use)
    * - A new WindowIterator instance (if the primary iterator is in early iteration)
    * - A slow generator-based iterator (if the primary iterator is past halfway)
-   * 
+   *
    * @returns {Iterator} An iterator that yields values in insertion order
    */
   [Symbol.iterator]() {

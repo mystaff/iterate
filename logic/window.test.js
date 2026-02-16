@@ -63,10 +63,10 @@ class Tests__Logic {
     const w = new Window(4);
     w.fill(0);
     expect(Array.from(w)).toEqual([0, 0, 0, 0]);
-    
+
     w.fill('test');
     expect(Array.from(w)).toEqual(['test', 'test', 'test', 'test']);
-    
+
     w.fill(null);
     expect(Array.from(w)).toEqual([null, null, null, null]);
   }
@@ -81,14 +81,14 @@ class Tests__Logic {
     w.push(2);
     w.push(3);
     expect(Array.from(w)).toEqual([1, 2, 3]);
-    
+
     // Wrap around - should overwrite first element
     w.push(4);
     expect(Array.from(w)).toEqual([2, 3, 4]);
-    
+
     w.push(5);
     expect(Array.from(w)).toEqual([3, 4, 5]);
-    
+
     w.push(6);
     expect(Array.from(w)).toEqual([4, 5, 6]);
   }
@@ -103,12 +103,12 @@ class Tests__Logic {
     w.push(20);
     w.push(30);
     w.push(40);
-    
+
     expect(w.shift()).toBe(10);
-    
+
     w.push(50); // wraps around, oldest is now 20
     expect(w.shift()).toBe(20);
-    
+
     w.push(60); // oldest is now 30
     expect(w.shift()).toBe(30);
   }
@@ -122,19 +122,19 @@ class Tests__Logic {
     w.push('a');
     w.push('b');
     w.push('c');
-    
+
     const iter1 = w[Symbol.iterator]();
     expect(iter1.next().value).toBe('a');
-    
+
     const iter2 = w[Symbol.iterator]();
     expect(iter2.next().value).toBe('a');
-    
+
     expect(iter1.next().value).toBe('b');
     expect(iter2.next().value).toBe('b');
-    
+
     expect(iter1.next().value).toBe('c');
     expect(iter2.next().value).toBe('c');
-    
+
     expect(iter1.next().done).toBe(true);
     expect(iter2.next().done).toBe(true);
   }
@@ -148,14 +148,14 @@ class Tests__Logic {
     w.push(1);
     w.push(2);
     w.push(3);
-    
+
     const iter = w[Symbol.iterator]();
     expect(iter.next().value).toBe(1);
-    
+
     const result = iter.return(99);
     expect(result.value).toBe(99);
     expect(result.done).toBe(true);
-    
+
     // Iterator should be finished
     expect(iter.next().done).toBe(true);
   }
@@ -169,13 +169,13 @@ class Tests__Logic {
     w.push(1);
     w.push(2);
     w.push(3);
-    
+
     const iter = w[Symbol.iterator]();
     expect(iter.next().value).toBe(1);
-    
+
     const result = iter.throw();
     expect(result.done).toBe(true);
-    
+
     // Iterator should be finished
     expect(iter.next().done).toBe(true);
   }
@@ -199,10 +199,10 @@ class Tests__Logic {
     const w = new Window(2);
     w.push('first');
     expect(Array.from(w)).toEqual([undefined, 'first']);
-    
+
     w.push('second');
     expect(Array.from(w)).toEqual(['first', 'second']);
-    
+
     w.push('third');
     expect(Array.from(w)).toEqual(['second', 'third']);
   }
@@ -217,12 +217,12 @@ class Tests__Logic {
     const obj2 = { id: 2, name: 'Bob' };
     const obj3 = { id: 3, name: 'Charlie' };
     const obj4 = { id: 4, name: 'David' };
-    
+
     w.push(obj1);
     w.push(obj2);
     w.push(obj3);
     expect(Array.from(w)).toEqual([obj1, obj2, obj3]);
-    
+
     w.push(obj4);
     expect(Array.from(w)).toEqual([obj2, obj3, obj4]);
   }
@@ -237,13 +237,13 @@ class Tests__Logic {
     w.push(2);
     w.push(3);
     w.push(4);
-    
+
     // Get primary iterator and advance it past halfway
     const iter1 = w[Symbol.iterator]();
     iter1.next(); // index 0
     iter1.next(); // index 1
     iter1.next(); // index 2 (past halfway for size 4)
-    
+
     // Next iterator should use slow path
     const iter2 = w[Symbol.iterator]();
     const values = Array.from(iter2);
