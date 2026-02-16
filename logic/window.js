@@ -37,6 +37,7 @@ class Window {
   /**
    * Creates a new Window with the specified size
    * @param {number} size - The fixed size of the circular buffer
+   * @see {@link Tests__Logic.window_constructor_test}
    */
   constructor(size) {
     this.buffer = Array(size);
@@ -47,6 +48,7 @@ class Window {
    * Fills the entire buffer with the specified value
    * @param {*} value - The value to fill the buffer with
    * @returns {Window} This window instance for chaining
+   * @see {@link Tests__Logic.window_fill_test}
    */
   fill(value) {
     this.buffer.fill(value);
@@ -58,6 +60,8 @@ class Window {
    * When the buffer is full, this overwrites the oldest value (circular behavior).
    * @param {*} value - The value to push into the window
    * @returns {number} The buffer length plus 1 (for compatibility)
+   * @see {@link Tests__Logic.window_circular_wrapping_test}
+   * @see {@link Tests__Logic.window_size_two_test}
    */
   push(value) {
     this.buffer[this.index++] = value;
@@ -69,6 +73,7 @@ class Window {
   /**
    * Returns the value at the current index position (the oldest value in the window)
    * @returns {*} The value at the current index position
+   * @see {@link Tests__Logic.window_shift_test}
    */
   shift() {
     return this.buffer[this.index];
@@ -80,6 +85,7 @@ class Window {
    * @generator
    * @yields {*} Values from the buffer in insertion order
    * @private
+   * @see {@link Tests__Logic.window_slow_iterator_test}
    */
   * getSlowIterator() {
     for (let i = this.index; i < this.buffer.length; ++i) { yield this.buffer[i]; }
@@ -93,6 +99,10 @@ class Window {
    * - A slow generator-based iterator (if the primary iterator is past halfway)
    *
    * @returns {Iterator} An iterator that yields values in insertion order
+   * @see {@link Tests__Logic.window_test}
+   * @see {@link Tests__Logic.window_empty_iteration_test}
+   * @see {@link Tests__Logic.window_multiple_iterations_test}
+   * @see {@link Tests__Logic.window_complex_objects_test}
    */
   [Symbol.iterator]() {
     if (this.iterator.index < 0) {
