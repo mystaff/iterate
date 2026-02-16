@@ -97,6 +97,38 @@ class Tests__Iterate {
     duplicatedOrderNamesIterate.flatMap(orderName);
     expect(Array.from(duplicatedOrderNamesIterate)).toEqual(['first', 'second', 'third']);
   }
+
+  /**
+    {@linkcode Iterate__mapping#dim .dim().}: multi-dimensional cartesian product
+    @memberof Tests__Iterate
+  */
+  static dim_test() {
+    // Basic 2D cartesian product
+    const result1 = Iterate.from([1, 2]).dim([3, 4]).toArray();
+    expect(result1).toEqual([
+      [1, 3],
+      [1, 4],
+      [2, 3],
+      [2, 4],
+    ]);
+
+    // 3D cartesian product
+    const result2 = Iterate.from(['a', 'b']).dim([1, 2], ['x', 'y']).toArray();
+    expect(result2).toEqual([
+      ['a', 1, 'x'],
+      ['a', 1, 'y'],
+      ['a', 2, 'x'],
+      ['a', 2, 'y'],
+      ['b', 1, 'x'],
+      ['b', 1, 'y'],
+      ['b', 2, 'x'],
+      ['b', 2, 'y'],
+    ]);
+
+    // Single dimension (no additional iterables)
+    const result3 = Iterate.from([1, 2, 3]).dim().toArray();
+    expect(result3).toEqual([[1], [2], [3]]);
+  }
 }
 
 testClass(Tests__Iterate);

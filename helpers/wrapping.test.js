@@ -272,6 +272,52 @@ class Tests__Helpers {
     expect(await _.arrayFromAsync(result1)).toEqual([3 * 5 + 4 * 2]);
     expect(await _.arrayFromAsync(result2)).toEqual([1 * 5 + 6 * 2]);
   }
+
+  /**
+    * {@linkcode Helpers__wrapping.curryFunction _.curryFunction()}: curry function with global context
+    @memberof Tests__Helpers
+  */
+  static curryFunction_test() {
+    const add = (a, b, c) => a + b + c;
+    const curriedAdd = _.curryFunction(add);
+    
+    // Curry with placeholders
+    const add5 = curriedAdd(_, 5, _);
+    expect(add5(10, 3)).toBe(18); // 10 + 5 + 3
+    
+    // Curry with partial args
+    const add10 = curriedAdd(10);
+    expect(add10(20, 30)).toBe(60); // 10 + 20 + 30
+    
+    // Full args
+    expect(curriedAdd(1, 2, 3)).toBe(6);
+  }
+
+  /**
+    * {@linkcode Helpers__wrapping.curryMethod _.curryMethod()}: curry method with context
+    @memberof Tests__Helpers
+  */
+  static curryMethod_test() {
+    const obj = {
+      value: 10,
+      add(a, b) {
+        return this.value + a + b;
+      },
+    };
+    
+    // Curry method by function reference
+    const curriedAdd = _.curryMethod(obj.add, obj);
+    const add5 = curriedAdd(_, 5);
+    expect(add5(3)).toBe(18); // 10 + 3 + 5
+    
+    // Curry method by name
+    const curriedAddByName = _.curryMethod('add', obj);
+    const add10 = curriedAddByName(10, _);
+    expect(add10(20)).toBe(40); // 10 + 10 + 20
+    
+    // Full args
+    expect(curriedAdd(1, 2)).toBe(13); // 10 + 1 + 2
+  }
 }
 
 testClass(Tests__Helpers);

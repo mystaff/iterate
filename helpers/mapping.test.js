@@ -357,6 +357,97 @@ class Tests__Helpers {
   }
 
   /**
+    * {@linkcode Helpers__mapping.trueTimes _.trueTimes()}: return true N times when predicate is truthy
+    @memberof Tests__Helpers
+  */
+  static trueTimes_test() {
+    // Positive integer
+    const fn3 = _.trueTimes(3);
+    expect(fn3(true)).toBe(true);
+    expect(fn3(true)).toBe(true);
+    expect(fn3(false)).toBe(false); // predicate is false, doesn't count
+    expect(fn3(true)).toBe(true);
+    expect(fn3(true)).toBe(false); // exhausted
+
+    // Zero
+    const fn0 = _.trueTimes(0);
+    expect(fn0(true)).toBe(false);
+    expect(fn0(false)).toBe(false);
+
+    // Negative integer
+    const fnNeg2 = _.trueTimes(-2);
+    expect(fnNeg2(true)).toBe(false);
+    expect(fnNeg2(false)).toBe(false); // predicate is false, doesn't count
+    expect(fnNeg2(true)).toBe(false);
+    expect(fnNeg2(true)).toBe(true);
+
+    // Positive non-integer
+    const fnPos = _.trueTimes(1.5);
+    expect(fnPos(true)).toBe(true);
+    expect(fnPos(false)).toBe(false);
+    expect(fnPos(true)).toBe(true);
+
+    // Negative non-integer
+    const fnNeg = _.trueTimes(-1.5);
+    expect(fnNeg(true)).toBe(false);
+    expect(fnNeg(false)).toBe(false);
+  }
+
+  /**
+    * {@linkcode Helpers__mapping.counter _.counter()}: counter function
+    @memberof Tests__Helpers
+  */
+  static counter_test() {
+    // Default step (1)
+    const counter = _.counter(0);
+    expect(counter()).toBe(0);
+    expect(counter()).toBe(1);
+    expect(counter()).toBe(2);
+    expect(counter()).toBe(3);
+
+    // Custom step
+    const counter5 = _.counter(10, 5);
+    expect(counter5()).toBe(10);
+    expect(counter5()).toBe(15);
+    expect(counter5()).toBe(20);
+
+    // Negative step
+    const counterNeg = _.counter(10, -2);
+    expect(counterNeg()).toBe(10);
+    expect(counterNeg()).toBe(8);
+    expect(counterNeg()).toBe(6);
+  }
+
+  /**
+    * {@linkcode Helpers__mapping.trueCounter _.trueCounter()}: conditional counter function
+    @memberof Tests__Helpers
+  */
+  static trueCounter_test() {
+    // Default step (1)
+    const counter = _.trueCounter(0);
+    expect(counter(true)).toBe(0);
+    expect(counter(true)).toBe(1);
+    expect(counter(false)).toBe(2); // returns current, doesn't increment
+    expect(counter(false)).toBe(2); // still 2
+    expect(counter(true)).toBe(2); // returns 2, then increments to 3
+    expect(counter(true)).toBe(3);
+
+    // Custom step
+    const counter5 = _.trueCounter(10, 5);
+    expect(counter5(true)).toBe(10);
+    expect(counter5(false)).toBe(15);
+    expect(counter5(true)).toBe(15);
+    expect(counter5(true)).toBe(20);
+
+    // Negative step
+    const counterNeg = _.trueCounter(10, -2);
+    expect(counterNeg(true)).toBe(10);
+    expect(counterNeg(true)).toBe(8);
+    expect(counterNeg(false)).toBe(6);
+    expect(counterNeg(true)).toBe(6);
+  }
+
+  /**
     * {@linkcode Helpers__mapping.lag _.lag()}: delay stream by N iterations
     @memberof Tests__Helpers
   */
