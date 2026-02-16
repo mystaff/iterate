@@ -36,8 +36,7 @@ class Iterate__aggregation extends Iterate__generation {
     @example
     const { Iterate } = require('@mystaff/iterate');
     
-    const iter = new Iterate(Iterate.from([1, 2, 3]));
-    iter.map(x => x * 2).toArray(); // [2, 4, 6]
+    Iterate.from([1, 2, 3]).map(x => x * 2).toArray(); // [2, 4, 6]
   */
   toArray(array) {
     if (array) {
@@ -136,8 +135,7 @@ class Iterate__aggregation extends Iterate__generation {
     @example
     const { Iterate } = require('@mystaff/iterate');
     
-    const iter = new Iterate(Iterate.from([1, 2, 3, 4]));
-    iter.reduce((acc, val) => acc + val, 0); // 10
+    Iterate.from([1, 2, 3, 4]).reduce((acc, val) => acc + val, 0); // 10
   */
   reduce(reducer, initialValue) {
     if (initialValue === undefined) {

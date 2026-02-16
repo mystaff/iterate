@@ -24,8 +24,7 @@ class Iterate__generation extends IterateBase {
     @example
     const { Iterate } = require('@mystaff/iterate');
     
-    const empty = new Iterate(Iterate.empty());
-    empty.toArray(); // []
+    Iterate.empty().toArray(); // []
   */
   static* empty() {
     // Empty generator
@@ -54,8 +53,7 @@ class Iterate__generation extends IterateBase {
     @example
     const { Iterate } = require('@mystaff/iterate');
     
-    const iter = new Iterate(Iterate.from([1, 2, 3]));
-    iter.toArray(); // [1, 2, 3]
+    Iterate.from([1, 2, 3]).toArray(); // [1, 2, 3]
   */
   static* from(param, ...args) {
     if (param == null) { return; }
@@ -80,8 +78,7 @@ class Iterate__generation extends IterateBase {
     @example
     const { Iterate } = require('@mystaff/iterate');
     
-    const iter = new Iterate(Iterate.concat([1, 2], [3, 4]));
-    iter.toArray(); // [1, 2, 3, 4]
+    Iterate.concat([1, 2], [3, 4]).toArray(); // [1, 2, 3, 4]
   */
   static* concat(...params) {
     for (const param of params) {
@@ -151,8 +148,7 @@ class Iterate__generation extends IterateBase {
     @example
     const { Iterate } = require('@mystaff/iterate');
     
-    const iter = new Iterate(Iterate.range(5));
-    iter.toArray(); // [0, 1, 2, 3, 4]
+    Iterate.range(5).toArray(); // [0, 1, 2, 3, 4]
   */
   static* range(start, end, step = 1) {
     if (end == null) { end = start; start = 0; }
