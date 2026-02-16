@@ -55,6 +55,72 @@ class Iterate__filtering extends Iterate__mapping {
       if (func.call(this, item, ++this.index, this)) { yield item; }
     }
   }
+
+  * drop(...predicators) {
+    if (predicators.length === 1 && typeof predicators[0] === 'number') {
+      let n = predicators[0];
+      for (const item of this) {
+        if (n--) { continue; }
+        yield item;
+        yield* this;
+      }
+      return;
+    }
+    const func = Helpers.predicator(predicators);
+    this.index = -1;
+    for (const item of this) {
+      this.value = item;
+      if (func.call(this, item, ++this.index, this)) { continue; }
+      yield item;
+      yield* this;
+      break;
+    }
+  }
+
+  * take(...predicators) {
+    if (predicators.length === 1 && typeof predicators[0] === 'number') {
+      let n = predicators[0];
+      for (const item of this) {
+        if (n--) { yield item; } else { break; }
+      }
+      return;
+    }
+    const func = Helpers.predicator(predicators);
+    this.index = -1;
+    for (const item of this) {
+      this.value = item;
+      if (func.call(this, item, ++this.index, this)) {
+        yield item;
+      } else { break; }
+    }
+  }
+
+  every(...predicators) {
+    const func = Helpers.predicator(predicators);
+    for (const item of this) {
+      this.value = item;
+      if (!func.call(this, item, ++this.index, this)) { return false; }
+    }
+    return true;
+  }
+
+  some(...predicators) {
+    const func = Helpers.predicator(predicators);
+    for (const item of this) {
+      this.value = item;
+      if (func.call(this, item, ++this.index, this)) { return true; }
+    }
+    return false;
+  }
+
+  find(...predicators) {
+    const func = Helpers.predicator(predicators);
+    for (const item of this) {
+      this.value = item;
+      if (func.call(this, item, ++this.index, this)) { return item; }
+    }
+    return undefined;
+  }
 }
 
 module.exports = Iterate__filtering;

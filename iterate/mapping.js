@@ -1,28 +1,14 @@
 const Helpers = require('../helpers');
 const Iterate__aggregation = require('./aggregation');
+const Iterate__generation = require('./generation');
 
 // VSCode IntelliSense hack
 /* eslint-disable *//* c8 ignore start */ if (false) {
   const { Tests__Iterate } = require('./mapping.test');
   const Iterate = require('.');
-  const { IterateContext } = require('.');
-  const { MapperParam, MapperFunction } = require('../helpers/mapping');
-  const Helpers__mapping = require('../helpers/mapping');
+  const { IterateContext, IterateMapperFunction } = require('.');
+  const { MapperParam } = require('../helpers/mapping');
 } /* c8 ignore stop *//* eslint-enable */
-
-/**
-  A mapping function. Used to somehow transform the value.
-  Optionally can use additional arguments and context provided by the caller for such transformation
-
-  @callback IterateMapperFunction
-  @param {*} value  Input value
-  @param {number} index  Integer zero-based index of iteration item
-  @param {IterateContext} context  Context of iteration pipeline method.
-    May be used for additional configuration of the method flow
-  @returns {*}  Mapped value
-  @this {IterateContext}  Same as `context` argument
-  @implements {MapperFunction}
-*/
 
 function* flatRecursion(iterable, depth) {
   if (!depth) { yield* iterable; return; }
@@ -34,6 +20,13 @@ function* flatRecursion(iterable, depth) {
         yield item;
       }
     }
+  }
+}
+
+function* dimRecursion(prefix, iterables) {
+  if (prefix.length > iterables.length) { yield prefix; return; }
+  for (const item of Iterate__generation.from(iterables[prefix.length - 1], prefix)) {
+    yield* dimRecursion.call(this, [...prefix, item], iterables);
   }
 }
 
@@ -69,7 +62,7 @@ class Iterate__mapping extends Iterate__aggregation {
   }
 
   /**
-    Mapping values one-to-one.
+    Map values one-to-one.
     Each value of iteration is transformed by one or more specified `mappers`.\
     Similar to native
     {@linkplain https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator/map
@@ -93,7 +86,7 @@ class Iterate__mapping extends Iterate__aggregation {
   }
 
   /**
-    Mapping values one-to-many. "Many" also includes "none" and "one".
+    Map values one-to-many. "Many" also includes "none" and "one".
     This acts the same as {@linkcode Iterate__mapping#map .map(...mappers)}{@linkcode Iterate__mapping#flat .flat()}
     Each value of iteration is transformed by one or more mapper functions
     (which may also be defined by mapper parameters), then the result is either:
@@ -128,6 +121,12 @@ class Iterate__mapping extends Iterate__aggregation {
           yield value;
         }
       }
+    }
+  }
+
+  * dim(...iterables) {
+    for (const item of this) {
+      yield* dimRecursion.call(this, [item], iterables);
     }
   }
 }

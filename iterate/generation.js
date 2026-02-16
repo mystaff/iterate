@@ -48,14 +48,15 @@ class Iterate__generation extends IterateBase {
     @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol
   */
   static* from(param, ...args) {
-    if (typeof param === 'function') {
-      yield* Iterate__generation.from(param.call(this, ...args));
-    } else if (typeof param !== 'object') {
-      yield param;
-    } else if (param[Symbol.iterator]) {
+    if (param == null) { return; }
+    if (param[Symbol.iterator]) {
       yield* param;
-    } else {
+    } else if (typeof param === 'function') {
+      yield* Iterate__generation.from(param.call(this, ...args));
+    } else if (typeof param === 'object') {
       yield* Iterate__generation.objectEntries(param);
+    } else {
+      yield param;
     }
   }
 

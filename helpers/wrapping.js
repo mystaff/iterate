@@ -209,14 +209,76 @@ const Helpers__wrapping = {
   },
 
   /**
-    Wrapper function to support the currying functions.\
-    * {@linkplain Tests__Helpers.curryFunction_test Unit Test}
+    Curry the function, so it may be called with partially predefined context/arguments. Returns curried funciton.\
+    * **Unit Tests:**
+    * * {@linkplain Tests__Helpers.curry_function Curry function}
+    * * {@linkplain Tests__Helpers.curry_methods Curry methods}
+    * * {@linkplain Tests__Helpers.curry_asyncRace Async race using curry arguments by 2 async functions}
+    * * {@linkplain Tests__Helpers.curry_asyncGeneratorRace Async race using curry arguments
+      by 2 async generator functions}
     @function
-    @param {Function} func  Source function
-    @param {Symbol} [symbol=_]  Curry argument symbol
-    @returns {Function}  Wrapped function
+    @param {function|object|string|number|symbol} func  Source to curry. Either:
+    * * Function -- curry the specified function;
+    * * String, number or symbol -- Curry the method, which is a property of `context` with specified name.
+    @param {function|object|null} [context=null]  `this` context. Either:
+    * * `null` or `undefined` -- use the calling context of the method;
+    * * Curry argument `_` -- curry the context as 1st argument in curried function;
+    * * `global` -- use global context. Also recommended to specify by default if context is not significant --
+      this is faster than specifying `null`/`undefined`;
+    * * Object or function -- context to bind to curried function.
+    @param {...*} [args]  Arguments to bind or curry in specified order. Curry argument `_` specifies
+      the arguments to curry. Other values are bound.
+    @returns {Function}  Curried function
   */
-  curryFunction: WrappersFunctionalWrap.curryFunction,
+  curry: WrappersFunctionalWrap.curry,
+
+  curryFunction: (func) => (...args) => WrappersFunctionalWrap.curry(func, global, ...args),
+
+  curryMethod: (func, context) => (...args) => {
+    if (typeof func !== 'function' && context && context !== WrappersFunctionalWrap.curryArgument) {
+      func = context[func];
+    }
+    return WrappersFunctionalWrap.curry(func, context, ...args);
+  },
+
+  curryContext: (func) => (...args) => WrappersFunctionalWrap.curry(func, ...args),
+
+  curryMethods(object, methodNames = null, curried = Object.create(null)) {
+    if (methodNames?.[Symbol.iterator]) {
+      for (const name of methodNames) {
+        curried[name] = Helpers__wrapping.curryMethod(object[name], object);
+      }
+    } else {
+      for (const name of Reflect.ownKeys(methodNames ?? object)) {
+        const method = object[name];
+        if (typeof method !== 'function') { continue; }
+        curried[name] = Helpers__wrapping.curryMethod(method, object);
+      }
+    }
+    return curried;
+  },
+
+  * objectPropertyNames(object, typeSet = null, prototypeSet = null, depth = 1) {
+    if (!depth) { return; }
+    let ownKeys = Reflect.ownKeys(object);
+    if (typeSet) { ownKeys = ownKeys.filter((key) => typeSet.has(typeof object[key])); }
+    if (prototypeSet) { ownKeys = ownKeys.filter((key) => prototypeSet.has(Object.getPrototypeOf(object[key]))); }
+    yield* ownKeys;
+    if (depth === 1) { return; }
+    const prototype = Object.getPrototypeOf(object);
+    if (!prototype || prototype === Object.prototype) { return; }
+    yield* Helpers__wrapping.objectPropertyNames(prototype, typeSet, prototypeSet, depth - 1);
+  },
+
+  functionTypes: new Set(['function']),
+
+  curryInstance(object, curried = Object.create(object)) {
+    return Helpers__wrapping.curryMethods(
+      object,
+      Helpers__wrapping.objectPropertyNames(object, Helpers__wrapping.functionTypes, null, Infinity),
+      curried,
+    );
+  },
 };
 
 module.exports = Helpers__wrapping;

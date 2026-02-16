@@ -92,7 +92,7 @@ const WindowIterator = require('../logic/window-iterator');
 
 /**
   Predicator parameter, which type/value is a shorthand to {@linkcode PredicatorFunciton} as following:
-  * * `Number` -- {@linkcode Helpers__mapping.times times(number)}
+  * * `Number` -- {@linkcode Helpers__mapping.trueTimes times(number)}
   * * `false` -- {@linkcode Helpers__mapping.not not}
   * * `true` -- {@linkcode Helpers__mapping.isNotNullish isNotNullish}
   * * `null`, `undefined` -- {@linkcode Helpers__mapping.isNullish isNullish}
@@ -139,26 +139,35 @@ const Helpers__mapping = {
   */
   WindowIterator,
 
-  /** Echo function.\
+  /**
+    Echo function.\
     * {@linkplain Tests__Helpers.echo_test Unit Test}
     @param {*} value  A value to be returned as-is
     @returns {*}  Returns the `value` itself
   */
   echo: (value) => value,
 
-  /** Async echo function.\
+  /**
+    Async echo function.\
     * {@linkplain Tests__Helpers.echoAsync_test Unit Test}
     @param {*} value  A value to be returned as-is
     @returns {*}  Returns the `value` itself
   */
   echoAsync: async (value) => value,
 
-  /** Returns a function, which always returns the specified value, ignoring the input value.\
+  /**
+    Returns a function, which always returns the specified value, ignoring the input value.\
     * {@linkplain Tests__Helpers.valueFn_test Unit Test}
     @param {*} value  A value to return from resulting function
     @returns {MappingFunction}  A function, returning the specified `value`
   */
   valueFn: (value) => () => value,
+
+  /**
+    Restores original value (if stored by chain method in {@linkcode IterateContext}) in a mapping pipeline
+    @this {IterateContext}
+  */
+  originalValue() { return this.value; },
 
   /** Check if value is nullish.\
     * {@linkplain Tests__Helpers.isNullish_test Unit Test}
@@ -318,14 +327,35 @@ const Helpers__mapping = {
   */
   times(count) {
     if (!count) { return () => false; }
-    if (count < 0) { return () => !(count++); }
-    return () => Boolean(count--);
+    if (count < 0) { return () => !(count && count++); }
+    return () => count && Boolean(count--);
+  },
+
+  trueTimes(count) {
+    if (!count) { return () => false; }
+    if (count < 0) { return (predicate) => !(predicate && count && count++); }
+    return (predicate) => predicate && count && Boolean(count--);
+  },
+
+  counter(start, step = 1) {
+    start -= step;
+    return () => (start += step);
+  },
+
+  trueCounter(start, step = 1) {
+    return (predicate) => {
+      try {
+        return start;
+      } finally {
+        if (predicate) { start += step; }
+      }
+    };
   },
 
   /**
     Returns a function, used to delay the data stream in specified number of iterations.\
     * {@linkplain Tests__Helpers.lag_test Unit Test}
-    @param {number} count  Positive integer number of iterations to delay the output values from input values
+    @param {number} steps  Positive integer number of iterations to delay the output values from input values
     @param {object} [options]  Additional options
     @returns {MappingFunction}  A function, accepting the value and returning the previously accepted value
       `count` iterations ago
@@ -548,7 +578,7 @@ Helpers__mapping.mapperByType = new Map([
 
 Helpers__mapping.predicatorByType = new Map([
   ...Helpers__mapping.mapperByType,
-  [Number.prototype, Helpers__mapping.times],
+  [Number.prototype, Helpers__mapping.trueTimes],
   [Array.prototype, Helpers__mapping.predicator],
 ]);
 

@@ -8,7 +8,7 @@ const Iterate__filtering = require('./filtering');
   const Iterate__generation = require('./generation');
   const Iterate__aggregation = require('./aggregation');
   const Iterate__mapping = require('./mapping');
-  const { MappingPipeline } = require('../helpers/mapping');
+  const { MappingPipeline, MapperFunction } = require('../helpers/mapping');
 } /* c8 ignore stop *//* eslint-enable */
 
 /* c8 ignore start */ const IterateBase = class IterateBase extends Iterate__filtering {
@@ -388,6 +388,20 @@ class Iterate extends IterateBase {
 /**
   Iteration pipeline or a context of one of its chain methods
   @typedef {Iterate|IterateContext} IteratePipelineOrContext
+*/
+
+/**
+  A mapping function. Used to somehow transform the value.
+  Optionally can use additional arguments and context provided by the caller for such transformation
+
+  @callback IterateMapperFunction
+  @param {*} value  Input value
+  @param {number} index  Integer zero-based index of iteration item
+  @param {IterateContext} context  Context of iteration pipeline method.
+    May be used for additional configuration of the method flow
+  @returns {*}  Mapped value
+  @this {IterateContext}  Same as `context` argument
+  @implements {MapperFunction}
 */
 
 // optimize `Iterate` class for performance and usability

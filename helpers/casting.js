@@ -12,8 +12,8 @@ const Helpers__casting = {
   /** Logic of `Array.fromAsync` function.\
     * {@linkplain Tests__Helpers.arrayFromAsync_test Unit Test}
     @async
-    @param {AsyncIterable<any>} iterable  Items to assemble to array
-    @returns {Array<any>}  Resulting array
+    @param {AsyncIterable<*>} iterable  Items to assemble to array
+    @returns {Array<*>}  Resulting array
     @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fromAsync
   */
   async arrayFromAsync(iterable) {

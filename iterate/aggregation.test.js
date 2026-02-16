@@ -37,6 +37,41 @@ class Tests__Iterate {
     const iterate = Iterate.from([1, 2, 3]);
     expect(iterate.toArray(existing)).toEqual([-1, 0, 1, 2, 3]);
   }
+
+  /**
+    {@linkcode Iterate__aggregation#each .each()} -- execute the mapper params for each value
+    @memberof Tests__Iterate
+  */
+  static each_test() {
+    let sum = 0;
+    const iterate = Iterate.from([1, 2, 3]);
+    iterate.each((value) => (sum += value));
+    expect(sum).toBe(0);
+    expect(iterate.toArray()).toEqual([1, 2, 3]);
+    expect(sum).toBe(6);
+  }
+
+  /**
+    {@linkcode Iterate__aggregation#forEach .forEach()} -- execute the mapper params for each value
+    @memberof Tests__Iterate
+  */
+  static forEach_test() {
+    let sum = 0;
+    const iterate = Iterate.from([1, 2, 3]);
+    const count = iterate.forEach((value) => (sum += value));
+    expect(sum).toBe(6);
+    expect(count).toBe(3);
+  }
+
+  /**
+    {@linkcode Iterate__aggregation#count .count()} -- count iterated values
+    @memberof Tests__Iterate
+  */
+  static count_test() {
+    const iterate = Iterate.from([1, 2, 3]);
+    const count = iterate.count();
+    expect(count).toBe(3);
+  }
 }
 
 testClass(Tests__Iterate);

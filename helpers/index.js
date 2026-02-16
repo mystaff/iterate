@@ -1,5 +1,6 @@
 const Helpers__mapping = require('./mapping');
 const Helpers__casting = require('./casting');
+const Helpers__async = require('./async');
 const Helpers__wrapping = require('./wrapping');
 
 /**
@@ -32,6 +33,7 @@ class Tests__Helpers {} // eslint-disable-line
 const Helpers = {
   ...Helpers__mapping,
   ...Helpers__casting,
+  ...Helpers__async,
   ...Helpers__wrapping,
 };
 

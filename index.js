@@ -8,6 +8,9 @@ const _ = {
   Iterate,
 };
 
+/**
+  Iterate library namespace
+*/
 module.exports = {
   ..._,
 

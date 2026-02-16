@@ -180,14 +180,97 @@ class Tests__Helpers {
   }
 
   /**
-    * {@linkcode Helpers__wrapping.curryFunction _.curryFunction()}:
+    * {@linkcode Helpers__wrapping.curry _.curry()}: different ways to curry the function
     @memberof Tests__Helpers
   */
-  static curryFunction_test() {
-    const mulAdd = _.curryFunction((a, b, c, d) => a * b + c * d);
-    expect(mulAdd(3, 5, 4, 2)).toBe(3 * 5 + 4 * 2); // as-is
-    expect(mulAdd(_, 5, _, 2)(3, 4)).toBe(3 * 5 + 4 * 2); // some args carried out using curry argument `A`
-    expect(mulAdd(3, 5, 4)(2)).toBe(3 * 5 + 4 * 2); // less args specified carry out the remaining args
+  static curry_function() {
+    const mulAdd = (a, b, c, d) => a * b + c * d;
+    expect(_.curry(mulAdd, global, _, 5, _, 2)(3, 4)).toBe(3 * 5 + 4 * 2); // args carried out using curry argument `_`
+    expect(_.curry(mulAdd, global, 3, 5, 4)(2)).toBe(3 * 5 + 4 * 2); // less args specified carry out the remaining args
+    expect(_.curry(mulAdd, global, 3, 5, 4, 2)()).toBe(3 * 5 + 4 * 2); // as-is
+  }
+
+  /**
+    * {@linkcode Helpers__wrapping.curry _.curry()}: different ways to curry the methods
+    @memberof Tests__Helpers
+  */
+  static curry_methods() {
+    const callerContextCurryArgsMethodArray = [1, 2, 3];
+    const callerContextCurryArgsMethodCurry = _.curry(Array.prototype.push, null, _, _);
+    expect(callerContextCurryArgsMethodCurry.call(callerContextCurryArgsMethodArray, 4, 5, 6, 7)).toBe(5);
+    expect(callerContextCurryArgsMethodArray).toEqual([1, 2, 3, 4, 5]);
+
+    const callerContextCurryArgsMethodNameArray = [1, 2, 3];
+    const callerContextCurryArgsMethodNameCurry = _.curry('push', null, _, _);
+    expect(callerContextCurryArgsMethodNameCurry.call(callerContextCurryArgsMethodNameArray, 4, 5, 6, 7)).toBe(5);
+    expect(callerContextCurryArgsMethodNameArray).toEqual([1, 2, 3, 4, 5]);
+
+    const curryContextCurryArgsMethodArray = [1, 2, 3];
+    const curryContextCurryArgsMethodCurry = _.curry(Array.prototype.push, _, _, _);
+    expect(curryContextCurryArgsMethodCurry(curryContextCurryArgsMethodArray, 4, 5, 6, 7)).toBe(5);
+    expect(curryContextCurryArgsMethodArray).toEqual([1, 2, 3, 4, 5]);
+
+    const curryContextCurryArgsMethodNameArray = [1, 2, 3];
+    const curryContextCurryArgsMethodNameCurry = _.curry('push', _, _, _);
+    expect(curryContextCurryArgsMethodNameCurry(curryContextCurryArgsMethodNameArray, 4, 5, 6, 7)).toBe(5);
+    expect(curryContextCurryArgsMethodNameArray).toEqual([1, 2, 3, 4, 5]);
+
+    const fixedContextRestArgsMethodArray = [1, 2, 3];
+    const fixedContextRestArgsMethodCurry = _.curry(Array.prototype.push, fixedContextRestArgsMethodArray, 4, 5);
+    expect(fixedContextRestArgsMethodCurry(6, 7)).toBe(7);
+    expect(fixedContextRestArgsMethodArray).toEqual([1, 2, 3, 4, 5, 6, 7]);
+
+    const fixedContextRestArgsMethodNameArray = [1, 2, 3];
+    const fixedContextRestArgsMethodNameCurry = _.curry('push', fixedContextRestArgsMethodNameArray, 4, 5);
+    expect(fixedContextRestArgsMethodNameCurry(6, 7)).toBe(7);
+    expect(fixedContextRestArgsMethodNameArray).toEqual([1, 2, 3, 4, 5, 6, 7]);
+
+    const callerContextRestArgsMethodArray = [1, 2, 3];
+    const callerContextRestArgsMethodCurry = _.curry(Array.prototype.push, null);
+    expect(callerContextRestArgsMethodCurry.call(callerContextRestArgsMethodArray, 4, 5, 6, 7)).toBe(7);
+    expect(callerContextRestArgsMethodArray).toEqual([1, 2, 3, 4, 5, 6, 7]);
+
+    const restContextRestArgsMethodArray = [1, 2, 3];
+    const restContextRestArgsMethodCurry = _.curry(Array.prototype.push);
+    expect(restContextRestArgsMethodCurry(restContextRestArgsMethodArray, 4, 5, 6, 7)).toBe(7);
+    expect(restContextRestArgsMethodArray).toEqual([1, 2, 3, 4, 5, 6, 7]);
+
+    const restContextRestArgsMethodNameArray = [1, 2, 3];
+    const restContextRestArgsMethodNameCurry = _.curry('push');
+    expect(restContextRestArgsMethodNameCurry(restContextRestArgsMethodNameArray, 4, 5, 6, 7)).toBe(7);
+    expect(restContextRestArgsMethodNameArray).toEqual([1, 2, 3, 4, 5, 6, 7]);
+  }
+
+  /**
+    * {@linkcode Helpers__wrapping.curry _.curry()}: async race
+    @memberof Tests__Helpers
+  */
+  static async curry_asyncRace() {
+    async function mulAdd(a, b, c, d) {
+      await _.delay(200);
+      return a * b + c * d;
+    }
+    const mulAddCurry = _.curry(mulAdd, null, _, 5, _, 2);
+    const result1 = mulAddCurry(3, 4);
+    const result2 = mulAddCurry(1, 6);
+    expect(await result1).toBe(3 * 5 + 4 * 2);
+    expect(await result2).toBe(1 * 5 + 6 * 2);
+  }
+
+  /**
+    * {@linkcode Helpers__wrapping.curry _.curry()}: async generator race
+    @memberof Tests__Helpers
+  */
+  static async curry_asyncGeneratorRace() {
+    async function* mulAdd(a, b, c, d) {
+      await _.delay(200);
+      yield a * b + c * d;
+    }
+    const mulAddCurry = _.curry(mulAdd, null, _, 5, _, 2);
+    const result1 = mulAddCurry(3, 4);
+    const result2 = mulAddCurry(1, 6);
+    expect(await _.arrayFromAsync(result1)).toEqual([3 * 5 + 4 * 2]);
+    expect(await _.arrayFromAsync(result2)).toEqual([1 * 5 + 6 * 2]);
   }
 }
 
