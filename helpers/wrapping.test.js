@@ -396,7 +396,7 @@ class Tests__Helpers {
   */
   static objectPropertyNames_test() {
     // Basic object
-    const obj = { a: 1, b: 'text', method() {}, [Symbol('sym')]: 'symbol' };
+    const obj = { a: 1, b: 'text', c: new Date(), d: [2, 3], n: null, method() {}, [Symbol('sym')]: 'symbol' };
     const allNames = Array.from(_.objectPropertyNames(obj));
     expect(allNames).toContain('a');
     expect(allNames).toContain('b');
@@ -413,7 +413,18 @@ class Tests__Helpers {
     expect(numberNames).toContain('a');
     expect(numberNames).not.toContain('b');
     expect(numberNames).not.toContain('method');
+
+    // Filter by prototype
+    const dateNames = Array.from(_.objectPropertyNames(obj, null, new Set([Date.prototype])));
+    expect(dateNames).toContain('c');
+    expect(dateNames).not.toContain('a');
+    expect(dateNames).not.toContain('b');
     
+    const arrayNames = Array.from(_.objectPropertyNames(obj, null, new Set([Array.prototype])));
+    expect(arrayNames).toContain('d');
+    expect(arrayNames).not.toContain('b');
+    expect(arrayNames).not.toContain('method');
+
     // Prototype chain
     class Base {
       baseMethod() {}

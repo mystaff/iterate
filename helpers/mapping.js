@@ -163,11 +163,12 @@ const Helpers__mapping = {
   */
   valueFn: (value) => () => value,
 
-  /**
+  /*
     Restores original value (if stored by chain method in {@linkcode IterateContext}) in a mapping pipeline
     @this {IterateContext}
-  */
+
   originalValue() { return this.value; },
+  */
 
   /** Check if value is nullish.\
     * {@linkplain Tests__Helpers.isNullish_test Unit Test}

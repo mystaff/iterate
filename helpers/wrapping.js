@@ -208,14 +208,14 @@ const Helpers__wrapping = {
     this.unwindObjectPrototypes(oldPrototype, object);
   },
 
+  /* c8 ignore start */
   debug(scopeCallback, options = {}) { /* external code from ./debug */ }, // eslint-disable-line
 
   fatal(error) {
-    /* c8 ignore start */
     console.error(error.stack ?? error);
     process.exit(1);
-    /* c8 ignore stop */
   },
+  /* c8 ignore stop */
 
   /**
     Curry the function, so it may be called with partially predefined context/arguments. Returns curried funciton.\
@@ -381,7 +381,13 @@ const Helpers__wrapping = {
     if (!depth) { return; }
     let ownKeys = Reflect.ownKeys(object);
     if (typeSet) { ownKeys = ownKeys.filter((key) => typeSet.has(typeof object[key])); }
-    if (prototypeSet) { ownKeys = ownKeys.filter((key) => prototypeSet.has(Object.getPrototypeOf(object[key]))); }
+    if (prototypeSet) {
+      ownKeys = ownKeys.filter((key) => {
+        const value = object[key];
+        if (value == null) { return false; }
+        return prototypeSet.has(Object.getPrototypeOf(value));
+      });
+    }
     yield* ownKeys;
     if (depth === 1) { return; }
     const prototype = Object.getPrototypeOf(object);
