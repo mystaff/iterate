@@ -57,7 +57,9 @@ class Iterate__generation extends IterateBase {
   */
   static* from(param, ...args) {
     if (param == null) { return; }
-    if (param[Symbol.iterator]) {
+    if (typeof param === 'string') {
+      yield param;
+    } else if (param[Symbol.iterator]) {
       yield* param;
     } else if (typeof param === 'function') {
       yield* Iterate__generation.from(param.call(this, ...args));

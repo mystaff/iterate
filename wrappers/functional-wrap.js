@@ -1,3 +1,9 @@
+
+// VSCode IntelliSense hack
+/* eslint-disable *//* c8 ignore start */ if (false) {
+  const { Tests__Helpers } = require('../helpers/wrapping.test');
+} /* c8 ignore stop *//* eslint-enable */
+
 const WrappersFunctionalWrap = {
   /** Use this argument to indicate the currying argument in supported function calls
     @member curryArgument
@@ -43,23 +49,23 @@ WrappersFunctionalWrap.curry = function curry(func, ...args) {
       if (typeof func === 'function') {
         return function curried(...inner) {
           curryMap.forEach((argsIdx, innerIdx) => { args[argsIdx] = inner[innerIdx]; });
-          return func.call(this, ...args);
+          return func.call(this, ...args, ...inner.slice(curryMap.length));
         };
       }
       return function curried(...inner) {
         curryMap.forEach((argsIdx, innerIdx) => { args[argsIdx] = inner[innerIdx]; });
-        return this[func].call(this, ...args);
+        return this[func].call(this, ...args, ...inner.slice(curryMap.length));
       };
     }
     if (typeof func === 'function') {
       return (...inner) => {
         curryMap.forEach((argsIdx, innerIdx) => { args[argsIdx] = inner[innerIdx]; });
-        return func.call(...args);
+        return func.call(...args, ...inner.slice(curryMap.length));
       };
     }
     return (...inner) => {
       curryMap.forEach((argsIdx, innerIdx) => { args[argsIdx] = inner[innerIdx]; });
-      return args[0][func].call(...args);
+      return args[0][func].call(...args, ...inner.slice(curryMap.length));
     };
   }
   if (args[0] != null) {

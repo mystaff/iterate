@@ -196,24 +196,24 @@ class Tests__Helpers {
   */
   static curry_methods() {
     const callerContextCurryArgsMethodArray = [1, 2, 3];
-    const callerContextCurryArgsMethodCurry = _.curry(Array.prototype.push, null, _, _);
-    expect(callerContextCurryArgsMethodCurry.call(callerContextCurryArgsMethodArray, 4, 5, 6, 7)).toBe(5);
-    expect(callerContextCurryArgsMethodArray).toEqual([1, 2, 3, 4, 5]);
+    const callerContextCurryArgsMethodCurry = _.curry(Array.prototype.push, null, _, 5);
+    expect(callerContextCurryArgsMethodCurry.call(callerContextCurryArgsMethodArray, 4, 6, 7)).toBe(7);
+    expect(callerContextCurryArgsMethodArray).toEqual([1, 2, 3, 4, 5, 6, 7]);
 
     const callerContextCurryArgsMethodNameArray = [1, 2, 3];
-    const callerContextCurryArgsMethodNameCurry = _.curry('push', null, _, _);
-    expect(callerContextCurryArgsMethodNameCurry.call(callerContextCurryArgsMethodNameArray, 4, 5, 6, 7)).toBe(5);
-    expect(callerContextCurryArgsMethodNameArray).toEqual([1, 2, 3, 4, 5]);
+    const callerContextCurryArgsMethodNameCurry = _.curry('push', null, 4, _);
+    expect(callerContextCurryArgsMethodNameCurry.call(callerContextCurryArgsMethodNameArray, 5, 6, 7)).toBe(7);
+    expect(callerContextCurryArgsMethodNameArray).toEqual([1, 2, 3, 4, 5, 6, 7]);
 
     const curryContextCurryArgsMethodArray = [1, 2, 3];
-    const curryContextCurryArgsMethodCurry = _.curry(Array.prototype.push, _, _, _);
-    expect(curryContextCurryArgsMethodCurry(curryContextCurryArgsMethodArray, 4, 5, 6, 7)).toBe(5);
-    expect(curryContextCurryArgsMethodArray).toEqual([1, 2, 3, 4, 5]);
+    const curryContextCurryArgsMethodCurry = _.curry(Array.prototype.push, _, 4, _);
+    expect(curryContextCurryArgsMethodCurry(curryContextCurryArgsMethodArray, 5, 6, 7)).toBe(7);
+    expect(curryContextCurryArgsMethodArray).toEqual([1, 2, 3, 4, 5, 6, 7]);
 
     const curryContextCurryArgsMethodNameArray = [1, 2, 3];
-    const curryContextCurryArgsMethodNameCurry = _.curry('push', _, _, _);
-    expect(curryContextCurryArgsMethodNameCurry(curryContextCurryArgsMethodNameArray, 4, 5, 6, 7)).toBe(5);
-    expect(curryContextCurryArgsMethodNameArray).toEqual([1, 2, 3, 4, 5]);
+    const curryContextCurryArgsMethodNameCurry = _.curry('push', _, _, 5);
+    expect(curryContextCurryArgsMethodNameCurry(curryContextCurryArgsMethodNameArray, 4, 6, 7)).toBe(7);
+    expect(curryContextCurryArgsMethodNameArray).toEqual([1, 2, 3, 4, 5, 6, 7]);
 
     const fixedContextRestArgsMethodArray = [1, 2, 3];
     const fixedContextRestArgsMethodCurry = _.curry(Array.prototype.push, fixedContextRestArgsMethodArray, 4, 5);

@@ -208,6 +208,15 @@ const Helpers__wrapping = {
     this.unwindObjectPrototypes(oldPrototype, object);
   },
 
+  debug(scopeCallback, options = {}) { /* external code from ./debug */ }, // eslint-disable-line
+
+  fatal(error) {
+    /* c8 ignore start */
+    console.error(error.stack ?? error);
+    process.exit(1);
+    /* c8 ignore stop */
+  },
+
   /**
     Curry the function, so it may be called with partially predefined context/arguments. Returns curried funciton.\
     * **Unit Tests:**
@@ -238,7 +247,12 @@ const Helpers__wrapping = {
     @param {function} func  Function to curry
     @returns {function}  A function that accepts curry arguments and returns the curried function
   */
-  curryFunction: (func) => (...args) => WrappersFunctionalWrap.curry(func, global, ...args),
+  curryFunction: (func) => (...args) => {
+    if (args.length >= func.length && !args.includes(WrappersFunctionalWrap.curryArgument)) {
+      return func(...args); // call function if arguments fulfilled
+    }
+    return WrappersFunctionalWrap.curry(func, global, ...args);
+  },
 
   /**
     Returns a curried version of a method with specified context.\
@@ -251,10 +265,22 @@ const Helpers__wrapping = {
     if (typeof func !== 'function' && context && context !== WrappersFunctionalWrap.curryArgument) {
       func = context[func];
     }
+    if (
+      typeof func === 'function'
+      && args.length >= func.length
+      && !args.includes(WrappersFunctionalWrap.curryArgument
+    )) {
+      return func.call(context, ...args); // call method if arguments fulfilled
+    }
     return WrappersFunctionalWrap.curry(func, context, ...args);
   },
 
-  curryContext: (func) => (...args) => WrappersFunctionalWrap.curry(func, ...args),
+  curryContext: (func) => (context, ...args) => {
+    if (args.length >= func.length && !args.includes(WrappersFunctionalWrap.curryArgument)) {
+      return func.call(context, ...args); // call function if arguments fulfilled
+    }
+    return WrappersFunctionalWrap.curry(func, context, ...args);
+  },
 
   curryMethods(object, methodNames = null, curried = Object.create(null)) {
     if (methodNames?.[Symbol.iterator]) {

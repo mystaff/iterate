@@ -6,7 +6,7 @@ const Iterate__mapping = require('./mapping');
   const { Tests__Iterate } = require('./filtering.test');
   const Iterate = require('.');
   const { IterateContext } = require('.');
-  const { PredicatorParam, PredicatorFunction } = require('../helpers/mapping');
+  const { PredicatorParam, PredicatorFunction, MappingPipeline } = require('../helpers/mapping');
   const Helpers__mapping = require('../helpers/mapping');
 } /* c8 ignore stop *//* eslint-enable */
 
@@ -19,6 +19,9 @@ const Iterate__mapping = require('./mapping');
   @param {*} value  Input value
   @param {number} index  Integer zero-based index of iteration item
   @param {IterateContext} context  Context of iteration pipeline method.
+    May be used for additional configuration of the method flow
+  @param {MappingPipeline} predicators  Predicator functions used to transform
+    or test (last predicator) the value.
     May be used for additional configuration of the method flow
   @returns {*}  Mapped value
   @this {IterateContext}  Same as `context` argument
@@ -56,7 +59,7 @@ class Iterate__filtering extends Iterate__mapping {
     this.index = -1;
     for (const item of this) {
       this.value = item;
-      if (func.call(this, item, ++this.index, this)) { yield item; }
+      if (func.call(this, item, ++this.index, this, predicators)) { yield item; }
     }
   }
 
@@ -129,7 +132,7 @@ class Iterate__filtering extends Iterate__mapping {
     this.index = -1;
     for (const item of this) {
       this.value = item;
-      if (func.call(this, item, ++this.index, this)) {
+      if (func.call(this, item, ++this.index, this, predicators)) {
         yield item;
       } else { break; }
     }
@@ -152,7 +155,7 @@ class Iterate__filtering extends Iterate__mapping {
     const func = Helpers.predicator(predicators);
     for (const item of this) {
       this.value = item;
-      if (!func.call(this, item, ++this.index, this)) { return false; }
+      if (!func.call(this, item, ++this.index, this, predicators)) { return false; }
     }
     return true;
   }
@@ -174,7 +177,7 @@ class Iterate__filtering extends Iterate__mapping {
     const func = Helpers.predicator(predicators);
     for (const item of this) {
       this.value = item;
-      if (func.call(this, item, ++this.index, this)) { return true; }
+      if (func.call(this, item, ++this.index, this, predicators)) { return true; }
     }
     return false;
   }
@@ -196,7 +199,7 @@ class Iterate__filtering extends Iterate__mapping {
     const func = Helpers.predicator(predicators);
     for (const item of this) {
       this.value = item;
-      if (func.call(this, item, ++this.index, this)) { return item; }
+      if (func.call(this, item, ++this.index, this, predicators)) { return item; }
     }
     return undefined;
   }

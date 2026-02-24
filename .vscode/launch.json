@@ -18,11 +18,11 @@
         "--runInBand",
         "--logHeapUsage",
 
-        // "helpers/mapping", // <-- uncomment and fill for specific test
+        // "helpers/wrapping", // <-- uncomment and fill for specific test
       ],
       "skipFiles": [
         "<node_internals>/**",
-        "**/wrappers/**", // <-- comment to debug code in `/wrappers`
+        //"**/wrappers/**", // <-- comment to debug code in `/wrappers`
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",

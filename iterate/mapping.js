@@ -85,7 +85,7 @@ class Iterate__mapping extends Iterate__aggregation {
     this.index = -1;
     for (const item of this) {
       this.value = item;
-      yield func.call(this, item, ++this.index, this);
+      yield func.call(this, item, ++this.index, this, mappers);
     }
   }
 
@@ -121,7 +121,7 @@ class Iterate__mapping extends Iterate__aggregation {
     this.index = -1;
     for (const item of this) {
       this.value = item;
-      const value = func.call(this, item, ++this.index, this);
+      const value = func.call(this, item, ++this.index, this, mappers);
       if (value != null) {
         if (value[Symbol.iterator] && typeof value !== 'string') {
           yield* value;

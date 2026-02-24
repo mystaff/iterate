@@ -334,6 +334,7 @@ class Tests__Helpers {
     expect(fn3()).toBe(true);
     expect(fn3()).toBe(true);
     expect(fn3()).toBe(false);
+    expect(fn3()).toBe(false);
 
     // Zero
     const fn0 = _.times(0);
@@ -344,16 +345,21 @@ class Tests__Helpers {
     expect(fnNeg2()).toBe(false);
     expect(fnNeg2()).toBe(false);
     expect(fnNeg2()).toBe(true);
+    expect(fnNeg2()).toBe(true);
 
     // Positive non-integer
     const fnPos = _.times(1.5);
     expect(fnPos()).toBe(true);
     expect(fnPos()).toBe(true);
+    expect(fnPos()).toBe(false);
+    expect(fnPos()).toBe(false);
 
     // Negative non-integer
     const fnNeg = _.times(-1.5);
     expect(fnNeg()).toBe(false);
     expect(fnNeg()).toBe(false);
+    expect(fnNeg()).toBe(true);
+    expect(fnNeg()).toBe(true);
   }
 
   /**
@@ -365,8 +371,9 @@ class Tests__Helpers {
     const fn3 = _.trueTimes(3);
     expect(fn3(true)).toBe(true);
     expect(fn3(true)).toBe(true);
-    expect(fn3(false)).toBe(false); // predicate is false, doesn't count
+    expect(fn3(false)).toBe(true); // predicate is false, doesn't count
     expect(fn3(true)).toBe(true);
+    expect(fn3(true)).toBe(false); // exhausted
     expect(fn3(true)).toBe(false); // exhausted
 
     // Zero
@@ -380,17 +387,23 @@ class Tests__Helpers {
     expect(fnNeg2(false)).toBe(false); // predicate is false, doesn't count
     expect(fnNeg2(true)).toBe(false);
     expect(fnNeg2(true)).toBe(true);
+    expect(fnNeg2(true)).toBe(true);
 
     // Positive non-integer
     const fnPos = _.trueTimes(1.5);
     expect(fnPos(true)).toBe(true);
-    expect(fnPos(false)).toBe(false);
+    expect(fnPos(false)).toBe(true);
     expect(fnPos(true)).toBe(true);
+    expect(fnPos(true)).toBe(false);
+    expect(fnPos(true)).toBe(false);
 
     // Negative non-integer
     const fnNeg = _.trueTimes(-1.5);
     expect(fnNeg(true)).toBe(false);
     expect(fnNeg(false)).toBe(false);
+    expect(fnNeg(true)).toBe(false);
+    expect(fnNeg(true)).toBe(true);
+    expect(fnNeg(true)).toBe(true);
   }
 
   /**
@@ -574,11 +587,13 @@ class Tests__Helpers {
   */
   static predicatorParam_test() {
     // Number -> times
-    const times3 = _.predicatorParam(3);
-    expect(times3()).toBe(true);
-    expect(times3()).toBe(true);
-    expect(times3()).toBe(true);
-    expect(times3()).toBe(false);
+    const trueTimes3 = _.predicatorParam(3);
+    expect(trueTimes3(true)).toBe(true);
+    expect(trueTimes3(false)).toBe(true);
+    expect(trueTimes3(true)).toBe(true);
+    expect(trueTimes3(true)).toBe(true);
+    expect(trueTimes3(true)).toBe(false);
+    expect(trueTimes3(true)).toBe(false);
 
     // Boolean true -> isNotNullish
     const notNullish = _.predicatorParam(true);
@@ -601,12 +616,14 @@ class Tests__Helpers {
     @memberof Tests__Helpers
   */
   static pipelineMapping_test() {
-    const pipeline = _.pipelineMapping([
+    const pipelineSource = [
       (x) => x + 1,
       (x) => x * 2,
       (x) => x - 3,
-    ]);
+    ];
+    const pipeline = _.pipelineMapping(pipelineSource);
     expect(pipeline(5)).toBe(9); // (5 + 1) * 2 - 3 = 9
+    expect(pipeline.pipeline).toBe(pipelineSource);
 
     // Optimized empty
     const empty = _.pipelineMapping([], true);
@@ -652,10 +669,12 @@ class Tests__Helpers {
     expect(single(-5)).toBe(false);
 
     // Number parameter
-    const times2 = _.predicator(2);
-    expect(times2()).toBe(true);
-    expect(times2()).toBe(true);
-    expect(times2()).toBe(false);
+    const trueTimes2 = _.predicator(2);
+    expect(trueTimes2(true)).toBe(true);
+    expect(trueTimes2(false)).toBe(true);
+    expect(trueTimes2(true)).toBe(true);
+    expect(trueTimes2(true)).toBe(false);
+    expect(trueTimes2(true)).toBe(false);
   }
 
   /**

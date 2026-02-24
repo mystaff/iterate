@@ -1,4 +1,5 @@
 const Helpers = require('../helpers');
+const { iterateProperties } = require('../wrappers/iterate-wrap');
 
 const Iterate__filtering = require('./filtering');
 
@@ -240,6 +241,7 @@ class Iterate extends IterateBase {
   */
   constructor(iterator, ...args) {
     super();
+    Object.defineProperties(this, iterateProperties);
     if (!iterator) { this.iterator = Helpers.voidIterator; return; }
     if (iterator.constructor === Helpers.voidGeneratorFunction.constructor) {
       this.generatorFn = iterator;
@@ -398,6 +400,8 @@ class Iterate extends IterateBase {
   @param {*} value  Input value
   @param {number} index  Integer zero-based index of iteration item
   @param {IterateContext} context  Context of iteration pipeline method.
+    May be used for additional configuration of the method flow
+  @param {MappingPipeline} predicators  Mapper functions used to transform the value.
     May be used for additional configuration of the method flow
   @returns {*}  Mapped value
   @this {IterateContext}  Same as `context` argument

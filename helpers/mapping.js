@@ -327,8 +327,8 @@ const Helpers__mapping = {
   */
   times(count) {
     if (!count) { return () => false; }
-    if (count < 0) { return () => !(count && count++); }
-    return () => count && Boolean(count--);
+    if (count < 0) { return () => (count >= 0) || (++count, false); }
+    return () => (count > 0) && (--count, true);
   },
 
   /**
@@ -343,8 +343,8 @@ const Helpers__mapping = {
   */
   trueTimes(count) {
     if (!count) { return () => false; }
-    if (count < 0) { return (predicate) => !(predicate && count && count++); }
-    return (predicate) => predicate && count && Boolean(count--);
+    if (count < 0) { return (predicate) => (count >= 0) || (predicate && (++count, false)); }
+    return (predicate) => (count > 0) && (!predicate || (--count, true));
   },
 
   /**
@@ -520,10 +520,12 @@ const Helpers__mapping = {
       if (!functions.length) { return Helpers__mapping.echo; }
       if (functions.length === 1) { return functions[0]; }
     }
-    return function _pipelineMapping(value, ...args) {
+    const mappingFunction = function _pipelineMapping(value, ...args) {
       for (const func of functions) { value = func.call(this, value, ...args); }
       return value;
     };
+    mappingFunction.pipeline = functions;
+    return mappingFunction;
   },
 
   /**

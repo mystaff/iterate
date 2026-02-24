@@ -41,13 +41,14 @@ class Tests__Iterate {
     function* pets() { yield 'dog'; yield 'cat'; yield 'hamster'; }
     const sea = ['shark', 'dolphin', 'whale'];
     const ground = { mole: 1, rat: 2, mouse: 3 };
-    const animalsIterate = Iterate.concat(birds(), pets, sea, ground, 'ant');
+    const animalsIterate = Iterate.concat(birds(), pets, null, sea, ground, 'ant', 10, 100n);
     expect(animalsIterate.toArray()).toEqual([
       'sparrow', 'robin', 'crow',
       'dog', 'cat', 'hamster',
       'shark', 'dolphin', 'whale',
       ['mole', 1], ['rat', 2], ['mouse', 3],
       'ant',
+      10, 100n,
     ]);
   }
 

@@ -79,7 +79,7 @@ class Iterate__aggregation extends Iterate__generation {
     this.index = -1;
     for (const item of this) {
       this.value = item;
-      mapper.call(this, item, ++this.index, this);
+      mapper.call(this, item, ++this.index, this, mappers);
       yield item;
     }
   }
@@ -98,7 +98,7 @@ class Iterate__aggregation extends Iterate__generation {
     this.index = -1;
     for (const item of this) {
       this.value = item;
-      mapper.call(this, item, ++this.index, this);
+      mapper.call(this, item, ++this.index, this, mappers);
     }
     return this.index + 1;
   }

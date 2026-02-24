@@ -1,7 +1,8 @@
-const Iterate = require('./iterate');
 const Helpers = require('./helpers');
+const Iterate = require('./iterate');
 
 const FunctionalWrap = require('./wrappers/functional-wrap');
+const Debug = require('./debug');
 
 const _ = {
   ...Helpers,
@@ -28,6 +29,9 @@ module.exports = {
 _._ = _; // under-the-hood correct short-circuit
 Object.assign(module, { exports: _ }); // hack to trick Intellisense
 FunctionalWrap.curryArgument = _; // use as default curry argument
+
+Debug.createDebuggerCommandsClosure(_);
+_.debug = Debug.debug;
 
 /**
   @class
