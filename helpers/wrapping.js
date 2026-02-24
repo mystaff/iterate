@@ -275,6 +275,27 @@ const Helpers__wrapping = {
     return WrappersFunctionalWrap.curry(func, context, ...args);
   },
 
+  /**
+    Returns a curried version of a function where the context is the first argument.\
+    * {@linkplain Tests__Helpers.curryContext_test Unit Test}
+    @example
+    // Curry a function with context as first parameter
+    const greet = function(greeting, name) {
+      return `${greeting}, ${name}! I'm ${this.title}`;
+    };
+    const curriedGreet = _.curryContext(greet);
+    const obj = { title: 'Assistant' };
+    
+    // Full args
+    curriedGreet(obj, 'Hello', 'John'); // => "Hello, John! I'm Assistant"
+    
+    // Curry some args
+    const greetObj = curriedGreet(obj, _, 'Jane');
+    greetObj('Hi'); // => "Hi, Jane! I'm Assistant"
+    @param {function} func  Function to curry with context as first argument
+    @returns {function}  A function that accepts context as first arg, then curry arguments,
+      and returns the curried function
+  */
   curryContext: (func) => (context, ...args) => {
     if (args.length >= func.length && !args.includes(WrappersFunctionalWrap.curryArgument)) {
       return func.call(context, ...args); // call function if arguments fulfilled
@@ -282,6 +303,32 @@ const Helpers__wrapping = {
     return WrappersFunctionalWrap.curry(func, context, ...args);
   },
 
+  /**
+    Create an object with curried versions of specified methods from an object.\
+    * {@linkplain Tests__Helpers.curryMethods_test Unit Test}
+    @example
+    // Curry methods from an object
+    const calculator = {
+      value: 100,
+      add(a, b) { return this.value + a + b; },
+      multiply(a, b) { return this.value * a * b; }
+    };
+    
+    // Curry all methods
+    const curried = _.curryMethods(calculator);
+    curried.add(10, 20); // => 130 (100 + 10 + 20)
+    
+    // Curry specific methods
+    const curriedAdd = _.curryMethods(calculator, ['add']);
+    const add10 = curriedAdd.add(_, 10);
+    add10(5); // => 115 (100 + 5 + 10)
+    @param {object} object  Object containing methods to curry
+    @param {Iterable<string|symbol>|object|null} [methodNames=null]  Method names to curry.
+      If iterable, curry only specified method names. If object, curry all function properties.
+      If null, curry all function properties of `object`.
+    @param {object} [curried=Object.create(null)]  Destination object to add curried methods to
+    @returns {object}  Object with curried methods
+  */
   curryMethods(object, methodNames = null, curried = Object.create(null)) {
     if (methodNames?.[Symbol.iterator]) {
       for (const name of methodNames) {
@@ -297,6 +344,39 @@ const Helpers__wrapping = {
     return curried;
   },
 
+  /**
+    Generator that yields property names from an object and its prototype chain.\
+    * {@linkplain Tests__Helpers.objectPropertyNames_test Unit Test}
+    @example
+    // Get all property names
+    const obj = { a: 1, b: 'text', method() {} };
+    const names = Array.from(_.objectPropertyNames(obj));
+    // names includes: 'a', 'b', 'method'
+    
+    // Get only function property names
+    const functionNames = Array.from(
+      _.objectPropertyNames(obj, new Set(['function']))
+    );
+    // functionNames: ['method']
+    
+    // Get property names from prototype chain
+    class Base { baseMethod() {} }
+    class Child extends Base { childMethod() {} }
+    const instance = new Child();
+    const allMethods = Array.from(
+      _.objectPropertyNames(instance, new Set(['function']), null, Infinity)
+    );
+    // allMethods: ['childMethod', 'baseMethod']
+    @generator
+    @param {object} object  Object to get property names from
+    @param {Set<string>|null} [typeSet=null]  Filter by property types (typeof values).
+      If null, all types are included.
+    @param {Set<object>|null} [prototypeSet=null]  Filter by property prototypes.
+      If null, all prototypes are included.
+    @param {number} [depth=1]  How many levels up the prototype chain to traverse.
+      Use `Infinity` for entire chain, 1 for own properties only.
+    @yields {string|symbol}  Property names from object and its prototype chain
+  */
   * objectPropertyNames(object, typeSet = null, prototypeSet = null, depth = 1) {
     if (!depth) { return; }
     let ownKeys = Reflect.ownKeys(object);
@@ -311,6 +391,32 @@ const Helpers__wrapping = {
 
   functionTypes: new Set(['function']),
 
+  /**
+    Create an object with curried versions of all methods from an object and its prototype chain.\
+    * {@linkplain Tests__Helpers.curryInstance_test Unit Test}
+    @example
+    // Curry all methods from an instance
+    class Calculator {
+      constructor(value) { this.value = value; }
+      add(a, b) { return this.value + a + b; }
+      multiply(a, b) { return this.value * a * b; }
+    }
+    
+    const calc = new Calculator(100);
+    const curried = _.curryInstance(calc);
+    
+    // Access original properties through prototype
+    curried.value; // => 100
+    
+    // Use curried methods
+    curried.add(10, 20); // => 130 (100 + 10 + 20)
+    const add10 = curried.add(10, _);
+    add10(20); // => 130 (100 + 10 + 20)
+    @param {object} object  Object instance to curry methods from
+    @param {object} [curried=Object.create(object)]  Destination object with `object` as prototype.
+      Defaults to new object with `object` as prototype.
+    @returns {object}  Object with curried methods and original object as prototype
+  */
   curryInstance(object, curried = Object.create(object)) {
     return Helpers__wrapping.curryMethods(
       object,

@@ -318,6 +318,194 @@ class Tests__Helpers {
     // Full args
     expect(curriedAdd(1, 2)).toBe(13); // 10 + 1 + 2
   }
+
+  /**
+    * {@linkcode Helpers__wrapping.curryContext _.curryContext()}: curry function with context as first parameter
+    @memberof Tests__Helpers
+  */
+  static curryContext_test() {
+    const greet = function(greeting, name) {
+      return `${greeting}, ${name}! I'm ${this.title}`;
+    };
+    
+    const curriedGreet = _.curryContext(greet);
+    const obj = { title: 'Assistant' };
+    
+    // Full args - call immediately
+    expect(curriedGreet(obj, 'Hello', 'John')).toBe("Hello, John! I'm Assistant");
+    
+    // Curry with placeholders
+    const greetObj = curriedGreet(obj, _, 'Jane');
+    expect(greetObj('Hi')).toBe("Hi, Jane! I'm Assistant");
+    expect(greetObj('Hey')).toBe("Hey, Jane! I'm Assistant");
+    
+    // Curry greeting
+    const helloGreeter = curriedGreet(obj, 'Hello', _);
+    expect(helloGreeter('Alice')).toBe("Hello, Alice! I'm Assistant");
+    
+    // Different context
+    const obj2 = { title: 'Bot' };
+    const greetObj2 = curriedGreet(obj2, 'Greetings', _);
+    expect(greetObj2('Bob')).toBe("Greetings, Bob! I'm Bot");
+  }
+
+  /**
+    * {@linkcode Helpers__wrapping.curryMethods _.curryMethods()}: curry multiple methods from an object
+    @memberof Tests__Helpers
+  */
+  static curryMethods_test() {
+    const calculator = {
+      value: 100,
+      add(a, b) { return this.value + a + b; },
+      multiply(a, b) { return this.value * a * b; },
+      subtract(a, b) { return this.value - a - b; },
+    };
+    
+    // Curry all methods
+    const curried = _.curryMethods(calculator);
+    expect(curried.add(10, 20)).toBe(130); // 100 + 10 + 20
+    expect(curried.multiply(2, 3)).toBe(600); // 100 * 2 * 3
+    
+    // Curry with placeholders
+    const add10 = curried.add(_, 10);
+    expect(add10(5)).toBe(115); // 100 + 5 + 10
+    
+    const multiply5 = curried.multiply(5, _);
+    expect(multiply5(4)).toBe(2000); // 100 * 5 * 4
+    
+    // Curry specific methods only
+    const curriedSpecific = _.curryMethods(calculator, ['add', 'subtract']);
+    expect(curriedSpecific.add).toBeDefined();
+    expect(curriedSpecific.subtract).toBeDefined();
+    expect(curriedSpecific.multiply).toBeUndefined();
+    
+    expect(curriedSpecific.add(1, 2)).toBe(103); // 100 + 1 + 2
+    expect(curriedSpecific.subtract(10, 5)).toBe(85); // 100 - 10 - 5
+    
+    // Custom destination object
+    const customDest = { custom: true };
+    const curriedCustom = _.curryMethods(calculator, ['add'], customDest);
+    expect(curriedCustom).toBe(customDest);
+    expect(curriedCustom.custom).toBe(true);
+    expect(curriedCustom.add(1, 1)).toBe(102); // 100 + 1 + 1
+  }
+
+  /**
+    * {@linkcode Helpers__wrapping.objectPropertyNames _.objectPropertyNames()}: get property names from object and prototype chain
+    @memberof Tests__Helpers
+  */
+  static objectPropertyNames_test() {
+    // Basic object
+    const obj = { a: 1, b: 'text', method() {}, [Symbol('sym')]: 'symbol' };
+    const allNames = Array.from(_.objectPropertyNames(obj));
+    expect(allNames).toContain('a');
+    expect(allNames).toContain('b');
+    expect(allNames).toContain('method');
+    expect(allNames.some(n => typeof n === 'symbol')).toBe(true);
+    
+    // Filter by type
+    const functionNames = Array.from(_.objectPropertyNames(obj, new Set(['function'])));
+    expect(functionNames).toContain('method');
+    expect(functionNames).not.toContain('a');
+    expect(functionNames).not.toContain('b');
+    
+    const numberNames = Array.from(_.objectPropertyNames(obj, new Set(['number'])));
+    expect(numberNames).toContain('a');
+    expect(numberNames).not.toContain('b');
+    expect(numberNames).not.toContain('method');
+    
+    // Prototype chain
+    class Base {
+      baseMethod() {}
+    }
+    Base.prototype.baseProp = 1;
+    
+    class Child extends Base {
+      childMethod() {}
+    }
+    Child.prototype.childProp = 2;
+    
+    const instance = new Child();
+    instance.ownProp = 3;
+    
+    // Depth 1 - own properties only
+    const ownProps = Array.from(_.objectPropertyNames(instance, null, null, 1));
+    expect(ownProps).toContain('ownProp');
+    expect(ownProps).not.toContain('childProp');
+    expect(ownProps).not.toContain('baseProp');
+    
+    // Infinite depth - entire prototype chain
+    const allMethods = Array.from(
+      _.objectPropertyNames(instance, new Set(['function']), null, Infinity)
+    );
+    expect(allMethods).toContain('childMethod');
+    expect(allMethods).toContain('baseMethod');
+    
+    // Depth 2 - own + 1 level up
+    const depth2Methods = Array.from(
+      _.objectPropertyNames(instance, new Set(['function']), null, 2)
+    );
+    expect(depth2Methods).toContain('childMethod');
+    // baseMethod is on Base.prototype, which is 2 levels up
+    
+    // Depth 0 - no properties
+    const noProps = Array.from(_.objectPropertyNames(obj, null, null, 0));
+    expect(noProps).toEqual([]);
+  }
+
+  /**
+    * {@linkcode Helpers__wrapping.curryInstance _.curryInstance()}: curry all methods from an instance
+    @memberof Tests__Helpers
+  */
+  static curryInstance_test() {
+    class Calculator {
+      constructor(value) {
+        this.value = value;
+      }
+      add(a, b) {
+        return this.value + a + b;
+      }
+      multiply(a, b) {
+        return this.value * a * b;
+      }
+    }
+    
+    class ExtendedCalculator extends Calculator {
+      subtract(a, b) {
+        return this.value - a - b;
+      }
+    }
+    
+    const calc = new ExtendedCalculator(100);
+    const curried = _.curryInstance(calc);
+    
+    // Original object is prototype
+    expect(Object.getPrototypeOf(curried)).toBe(calc);
+    
+    // Can access original properties through prototype
+    expect(curried.value).toBe(100);
+    
+    // Curried methods work
+    expect(curried.add(10, 20)).toBe(130); // 100 + 10 + 20
+    expect(curried.multiply(2, 3)).toBe(600); // 100 * 2 * 3
+    expect(curried.subtract(10, 5)).toBe(85); // 100 - 10 - 5
+    
+    // Can use curry arguments
+    const add10 = curried.add(10, _);
+    expect(add10(20)).toBe(130); // 100 + 10 + 20
+    
+    const multiply5 = curried.multiply(5, _);
+    expect(multiply5(4)).toBe(2000); // 100 * 5 * 4
+    
+    // Methods from parent class are also curried
+    const subtract20 = curried.subtract(_, 20);
+    expect(subtract20(10)).toBe(70); // 100 - 10 - 20
+    
+    // Custom destination
+    const customCurried = _.curryInstance(calc, {});
+    expect(customCurried.add).toBeDefined();
+    expect(customCurried.add(1, 1)).toBe(102); // 100 + 1 + 1
+  }
 }
 
 testClass(Tests__Helpers);
