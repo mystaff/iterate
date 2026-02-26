@@ -126,15 +126,15 @@ class Iterate__aggregation extends Iterate__generation {
     * * {@linkplain Tests__Iterate.reduce_withReducer With reducer function}
     * * {@linkplain Tests__Iterate.reduce_withInitial With initial value}
     * * {@linkplain Tests__Iterate.reduce_sum Sum without reducer (default addition)}
-    @param {function} [reducer]  Reducer function `(accumulator, currentValue, index) => newAccumulator`.
-      If not provided, uses addition operator (`+`) to sum values.
+    @param {function} [reducer]  Reducer function `(accumulator, currentValue, index, iterate) => newAccumulator`.
+      If not provided, uses addition operator (`+`) to sum numbers or concatenate strings.
     @param {*} [initialValue]  Initial value for the accumulator.
       If not provided, uses the first item from iteration.
     @this {Iterate}  Current pipeline
     @returns {*}  The final accumulated value
     @example
     const { Iterate } = require('@mystaff/iterate');
-    
+
     Iterate.from([1, 2, 3, 4]).reduce((acc, val) => acc + val, 0); // 10
   */
   reduce(reducer, initialValue) {
@@ -146,7 +146,7 @@ class Iterate__aggregation extends Iterate__generation {
     }
     if (reducer) {
       for (const item of this) {
-        initialValue = reducer(initialValue, item, ++this.index);
+        initialValue = reducer(initialValue, item, ++this.index, this);
       }
     } else {
       for (const item of this) {

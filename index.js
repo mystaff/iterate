@@ -4,13 +4,21 @@ const Iterate = require('./iterate');
 const FunctionalWrap = require('./wrappers/functional-wrap');
 const Debug = require('./debug');
 
+/**
+  Shorthand to many features of this library
+  @function
+  @memberof Helpers
+*/
 const _ = {
   ...Helpers,
   Iterate,
 };
 
 /**
-  Iterate library namespace
+  Shorthand to many features of this library
+  @function
+  @memberof Helpers
+  @ignore
 */
 module.exports = {
   ..._,
@@ -26,12 +34,24 @@ module.exports = {
   _,
 };
 
-_._ = _; // under-the-hood correct short-circuit
-Object.assign(module, { exports: _ }); // hack to trick Intellisense
-FunctionalWrap.curryArgument = _; // use as default curry argument
+function shorthand(...args) {
+  if (!args.length) { return Object.create(null); }
+  if (typeof args[0] === 'function') { return Debug.debug(...args); }
+  if (args.length <= 3 && args.every((value) => typeof value === 'number')) {
+    return Iterate.range(...args); // TODO: AsyncIterate
+  }
+  // if (args.some((value) => value?.[Symbol.iterator] || value?.[Symbol.asyncIterator])) {
+  return Iterate.concat(...args); // TODO: AsyncIterate
+  // }
+}
 
-Debug.createDebuggerCommandsClosure(_);
-_.debug = Debug.debug;
+Object.assign(shorthand, _);
+shorthand._ = shorthand; // under-the-hood correct short-circuit
+Object.assign(module, { exports: shorthand }); // hack to trick Intellisense
+FunctionalWrap.curryArgument = shorthand; // use as default curry argument
+
+Debug.createDebuggerCommandsClosure(shorthand);
+shorthand.debug = Debug.debug;
 
 /**
   @class

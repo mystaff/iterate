@@ -88,6 +88,17 @@ class Iterate__generation extends IterateBase {
     }
   }
 
+  // TODO: docs
+  * prepend(...params) {
+    yield* Iterate__generation.concat(...params);
+    yield* this;
+  }
+
+  * append(...params) {
+    yield* this;
+    yield* Iterate__generation.concat(...params);
+  }
+
   /**
     Create {@linkcode Iterate} for object keys\
     * {@linkplain Tests__Iterate.objectKeys_test Unit Test}
