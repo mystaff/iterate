@@ -16,7 +16,7 @@ function externalDebuggerSession() {
   debuggerSession.post('Debugger.enable');
 }
 
-const rxStackLocation = /\((?<location>[^)]+:\d+:\d+)\)(?:\n|$)/g;
+const rxStackLocation = /(?:at | \()(?<location>[^()]+:\d+:\d+)\)?(?:\n|$)/g;
 
 function getCallStackFileLocation(lineNumber) {
   lineNumber++;
@@ -99,7 +99,7 @@ function debug(scopeCallback, options = {}) {
   if (!options.resultCallback) { options.resultCallback = (v) => v; }
   if (options.callStackDepth == null) { options.callStackDepth = 1; }
 
-  let location = getCallStackFileLocation(options.callStackDepth );
+  let location = getCallStackFileLocation(options.callStackDepth);
   if (location) { location = path.relative('.', location); }
   options.location = location;
 

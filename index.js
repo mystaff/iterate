@@ -36,7 +36,9 @@ module.exports = {
 
 function shorthand(...args) {
   if (!args.length) { return Object.create(null); }
-  if (typeof args[0] === 'function') { return Debug.debug(...args); }
+  if (typeof args[0] === 'function') {
+    return Debug.debug(args[0], { ...args[1], callStackDepth: (args[1]?.callStackDepth ?? 1) + 1 });
+  }
   if (args.length <= 3 && args.every((value) => typeof value === 'number')) {
     return Iterate.range(...args); // TODO: AsyncIterate
   }
