@@ -156,12 +156,14 @@ class TinyREPL {
     }
   }
 
-  insertChar(char) {
+  insertChar(char, skipRender = false) {
     const line = this.lines[this.cursorRow];
     this.lines[this.cursorRow] = 
       line.slice(0, this.cursorCol) + char + line.slice(this.cursorCol);
     this.cursorCol++;
-    this.render();
+    if (!skipRender) {
+      this.render();
+    }
   }
 
   deleteChar() {
@@ -196,14 +198,16 @@ class TinyREPL {
     }
   }
 
-  newLine() {
+  newLine(skipRender = false) {
     const line = this.lines[this.cursorRow];
     const afterCursor = line.slice(this.cursorCol);
     this.lines[this.cursorRow] = line.slice(0, this.cursorCol);
     this.cursorRow++;
     this.lines.splice(this.cursorRow, 0, afterCursor);
     this.cursorCol = 0;
-    this.render();
+    if (!skipRender) {
+      this.render();
+    }
   }
 
   moveCursorLeft() {
@@ -400,12 +404,13 @@ class TinyREPL {
         for (const char of key) {
           if (char >= ' ' || char === '\n' || char === '\r') {
             if (char === '\n' || char === '\r') {
-              this.newLine();
+              this.newLine(true);  // skip render during batch
             } else {
-              this.insertChar(char);
+              this.insertChar(char, true);  // skip render during batch
             }
           }
         }
+        this.render();  // render once at the end
         return;
       }
 
