@@ -394,6 +394,21 @@ class TinyREPL {
         return;
       }
 
+      // Handle paste (multi-character input)
+      if (key.length > 1 && !key.startsWith('\x1b')) {
+        // This is pasted text (not an escape sequence)
+        for (const char of key) {
+          if (char >= ' ' || char === '\n' || char === '\r') {
+            if (char === '\n' || char === '\r') {
+              this.newLine();
+            } else {
+              this.insertChar(char);
+            }
+          }
+        }
+        return;
+      }
+
       // Handle regular characters
       if (key.length === 1 && key >= ' ') {
         this.insertChar(key);
