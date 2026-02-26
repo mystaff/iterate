@@ -122,7 +122,7 @@ function debug(scopeCallback, options = {}) {
     } else {
       process.stderr.write('\nargs = [\n');
       let n = 0;
-      for (const arg of args) { process.stderr.write(`\n  [${n++}]: ${inspect(args, 2)}\n`); }
+      for (const arg of args) { process.stderr.write(`\n  [${n++}]: ${inspect(arg, 2)}\n`); }
       process.stderr.write(']\n');
     }
 
