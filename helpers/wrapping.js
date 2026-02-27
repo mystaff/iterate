@@ -209,8 +209,6 @@ const Helpers__wrapping = {
   },
 
   /* c8 ignore start */
-  debug(scopeCallback, options = {}) { /* external code from ./debug */ }, // eslint-disable-line
-
   fatal(error) {
     console.error(error.stack ?? error);
     process.exit(1);

@@ -4,6 +4,8 @@ const child_process = require('node:child_process');
 const inspector = require('node:inspector');
 const Iterate = require('../iterate');
 
+const stackTrace = require('./stack-trace');
+
 const commonOptions = {};
 
 let debuggerSession;
@@ -11,6 +13,7 @@ let debuggerSession;
 /* c8 ignore start */
 
 function externalDebuggerSession() {
+  if (debuggerSession) { return; }
   debuggerSession = new inspector.Session();
   debuggerSession.connect();
   debuggerSession.post('Debugger.enable');
@@ -94,6 +97,19 @@ const debugInspectOptions = {
   numericSeparator: true,
 };
 
+/**
+  Debug the scope
+  @param {function} scopeCallback  A dummy function accepting `(arguments, context)` parameters,
+    which scope is used to pause the debugger in
+  @param {object} [options]  Options
+  @param {function} [options.condition=_.true]  Function accepting the same parameters as returned function,
+    and returns predicate to determine whether to pause
+  @param {function} [options.resultCallback=_.echo]  Function accepting the same parameters as returned function,
+    and returns the result of returned function. By default: result is the same as first argument,
+    so it's handy to transparently debug mapping functions
+  @param {function} [options.callStackDepth=1]  How many stack frames to skip, when determining the code location
+  @returns {function}
+*/
 function debug(scopeCallback, options = {}) {
   if (!options.condition) { options.condition = () => true; }
   if (!options.resultCallback) { options.resultCallback = (v) => v; }
@@ -182,10 +198,10 @@ function createDebuggerCommandsClosure(_) {
     return display;
   };
 }
-
 /* c8 ignore stop */
 
 module.exports = {
   debug,
   createDebuggerCommandsClosure,
+  ...stackTrace,
 };

@@ -12,6 +12,8 @@ const Debug = require('./debug');
 const _ = {
   ...Helpers,
   Iterate,
+  debug: Debug.debug,
+  Debug,
 };
 
 /**
@@ -53,7 +55,6 @@ Object.assign(module, { exports: shorthand }); // hack to trick Intellisense
 FunctionalWrap.curryArgument = shorthand; // use as default curry argument
 
 Debug.createDebuggerCommandsClosure(shorthand);
-shorthand.debug = Debug.debug;
 
 /**
   @class
