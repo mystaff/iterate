@@ -12,7 +12,7 @@ const Debug = require('./debug');
 const _ = {
   ...Helpers,
   Iterate,
-  debug: Debug.debug,
+  ...Debug,
   Debug,
 };
 

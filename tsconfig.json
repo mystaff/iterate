@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    // Generate .d.ts declaration files
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    
+    // Process JavaScript files
+    "allowJs": true,
+    "checkJs": false,
+    
+    // Module settings
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ES2020",
+    
+    // Output settings
+    "outDir": "./",
+    "rootDir": "./",
+    
+    // Preserve JSDoc comments in declarations
+    "removeComments": false,
+    
+    // Other settings
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": false
+  },
+  "include": [
+    "index.js",
+    "helpers/**/*.js",
+    "iterate/**/*.js",
+    "logic/**/*.js",
+    "debug/**/*.js",
+    "wrappers/**/*.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.test.js",
+    "**/*.spec.js",
+    ".local",
+    "coverage",
+    "docs",
+    "examples",
+    "ui",
+    "ui-lcov"
+  ]
+}

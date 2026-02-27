@@ -4,7 +4,7 @@
   },
   "source": {
     "include": [
-      "index.js", "./iterate/", "./helpers/", "./logic"
+      "index.js", "./iterate/", "./helpers/", "./logic", "./debug"
     ],
     "exclude":[],
     "includePattern": ".+\\.js(doc)?$",

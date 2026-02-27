@@ -97,81 +97,83 @@ const debugInspectOptions = {
   numericSeparator: true,
 };
 
-/**
-  Debug the scope
-  @param {function} scopeCallback  A dummy function accepting `(arguments, context)` parameters,
-    which scope is used to pause the debugger in
-  @param {object} [options]  Options
-  @param {function} [options.condition=_.true]  Function accepting the same parameters as returned function,
-    and returns predicate to determine whether to pause
-  @param {function} [options.resultCallback=_.echo]  Function accepting the same parameters as returned function,
-    and returns the result of returned function. By default: result is the same as first argument,
-    so it's handy to transparently debug mapping functions
-  @param {function} [options.callStackDepth=1]  How many stack frames to skip, when determining the code location
-  @returns {function}
-*/
-function debug(scopeCallback, options = {}) {
-  if (!options.condition) { options.condition = () => true; }
-  if (!options.resultCallback) { options.resultCallback = (v) => v; }
-  if (options.callStackDepth == null) { options.callStackDepth = 1; }
+const Debug = {
+  /**
+    Debug the scope
+    @param {function} scopeCallback  A dummy function accepting `(arguments, context)` parameters,
+      which scope is used to pause the debugger in
+    @param {object} [options]  Options
+    @param {function} [options.condition=_.true]  Function accepting the same parameters as returned function,
+      and returns predicate to determine whether to pause
+    @param {function} [options.resultCallback=_.echo]  Function accepting the same parameters as returned function,
+      and returns the result of returned function. By default: result is the same as first argument,
+      so it's handy to transparently debug mapping functions
+    @param {function} [options.callStackDepth=1]  How many stack frames to skip, when determining the code location
+    @returns {function}
+  */
+  debug(scopeCallback, options = {}) {
+    if (!options.condition) { options.condition = () => true; }
+    if (!options.resultCallback) { options.resultCallback = (v) => v; }
+    if (options.callStackDepth == null) { options.callStackDepth = 1; }
 
-  let location = getCallStackFileLocation(options.callStackDepth);
-  if (location) { location = path.relative('.', location); }
-  options.location = location;
+    let location = getCallStackFileLocation(options.callStackDepth);
+    if (location) { location = path.relative('.', location); }
+    options.location = location;
 
-  return function _debug(...args) {
-    if (options.pass || commonOptions.passAll || !options.condition(args, this)) { return args[0]; }
-    const inspect = (value, indent = 0) => (
-      util.inspect(value, debugInspectOptions).replaceAll('\n', `\n${' '.repeat(indent)}`)
-    );
+    return function _debug(...args) {
+      if (options.pass || commonOptions.passAll || !options.condition(args, this)) { return args[0]; }
+      const inspect = (value, indent = 0) => (
+        util.inspect(value, debugInspectOptions).replaceAll('\n', `\n${' '.repeat(indent)}`)
+      );
 
-    process.stderr.write(`\ncontext = ${inspect(this)}\n`);
+      process.stderr.write(`\ncontext = ${inspect(this)}\n`);
 
-    if (args.length === 4 && args[2] instanceof Iterate) { // this is most likely iterate mapping callback
-      [global.value, global.index, global.iterate, global.mappings] = args;
-      process.stderr.write('\nargs = [\n'
-        + `  [0]: value = ${inspect(global.value, 2)}\n`
-        + `  [1]: index = ${inspect(global.index, 2)}\n`
-        + `  [2]: iterate = ${inspect(global.iterate, 2)}\n`
-        + `  [3]: mappings = ${inspect(global.mappings, 2)}\n`
-        + ']\n');
-    } else {
-      process.stderr.write('\nargs = [\n');
-      let n = 0;
-      for (const arg of args) { process.stderr.write(`\n  [${n++}]: ${inspect(arg, 2)}\n`); }
-      process.stderr.write(']\n');
-    }
-
-    process.stderr.write(`\n[Iterate Debug] @ ${location || '<unknown>'}\n`);
-
-    const isDebugging = inspector.url();
-
-    let result;
-    global.debugOptions = options;
-    global.args = args;
-    global.context = this;
-
-    if (isDebugging) {
-      externalDebuggerSession();
-      if (scopeCallback) {
-        debuggerSession.post('Debugger.pause', scopeCallback.bind(this, args, this));
+      if (args.length === 4 && args[2] instanceof Iterate) { // this is most likely iterate mapping callback
+        [global.value, global.index, global.iterate, global.mappings] = args;
+        process.stderr.write('\nargs = [\n'
+          + `  [0]: value = ${inspect(global.value, 2)}\n`
+          + `  [1]: index = ${inspect(global.index, 2)}\n`
+          + `  [2]: iterate = ${inspect(global.iterate, 2)}\n`
+          + `  [3]: mappings = ${inspect(global.mappings, 2)}\n`
+          + ']\n');
+      } else {
+        process.stderr.write('\nargs = [\n');
+        let n = 0;
+        for (const arg of args) { process.stderr.write(`\n  [${n++}]: ${inspect(arg, 2)}\n`); }
+        process.stderr.write(']\n');
       }
-    } else {
-      runtimeDebugger({ args, context: this });
-      if (scopeCallback) {
-        scopeCallback.call(this, args, this);
+
+      process.stderr.write(`\n[Iterate Debug] @ ${location || '<unknown>'}\n`);
+
+      const isDebugging = inspector.url();
+
+      let result;
+      global.debugOptions = options;
+      global.args = args;
+      global.context = this;
+
+      if (isDebugging) {
+        externalDebuggerSession();
+        if (scopeCallback) {
+          debuggerSession.post('Debugger.pause', scopeCallback.bind(this, args, this));
+        }
+      } else {
+        runtimeDebugger({ args, context: this });
+        if (scopeCallback) {
+          scopeCallback.call(this, args, this);
+        }
       }
-    }
-    result = options.resultCallback.call(this, ...args);
-    try {
-      return result;
-    } finally {
-      if (isDebugging && !scopeCallback) {
-        debuggerSession.post('Debugger.pause');
+      result = options.resultCallback.call(this, ...args);
+      try {
+        return result;
+      } finally {
+        if (isDebugging && !scopeCallback) {
+          debuggerSession.post('Debugger.pause');
+        }
       }
-    }
-  };
-}
+    };
+  },
+};
 
 function help() { // eslint-disable-line
   process.stderr.write(
@@ -201,7 +203,7 @@ function createDebuggerCommandsClosure(_) {
 /* c8 ignore stop */
 
 module.exports = {
-  debug,
+  ...Debug,
   createDebuggerCommandsClosure,
   ...stackTrace,
 };
